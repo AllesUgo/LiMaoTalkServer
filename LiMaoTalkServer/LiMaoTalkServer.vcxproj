@@ -142,7 +142,7 @@
     <ClInclude Include="uuid.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="README.md" />
+    <None Include="..\README.md" />
     <None Include="ReadmeFiles\Message.md" />
   </ItemGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">

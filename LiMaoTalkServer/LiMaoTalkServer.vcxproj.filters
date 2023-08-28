@@ -265,6 +265,6 @@
     <None Include="ReadmeFiles\Message.md">
       <Filter>ReadmeFiles</Filter>
     </None>
-    <None Include="README.md" />
+    <None Include="..\README.md" />
   </ItemGroup>
 </Project>
