@@ -1,0 +1,270 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="Buffer.cpp">
+      <Filter>rbslib\src</Filter>
+    </ClCompile>
+    <ClCompile Include="FileIO.cpp">
+      <Filter>rbslib\src</Filter>
+    </ClCompile>
+    <ClCompile Include="Network.cpp">
+      <Filter>rbslib\src</Filter>
+    </ClCompile>
+    <ClCompile Include="Storage.cpp">
+      <Filter>rbslib\src</Filter>
+    </ClCompile>
+    <ClCompile Include="Streams.cpp">
+      <Filter>rbslib\src</Filter>
+    </ClCompile>
+    <ClCompile Include="cJSON.cpp">
+      <Filter>json</Filter>
+    </ClCompile>
+    <ClCompile Include="CJsonObject.cpp">
+      <Filter>json</Filter>
+    </ClCompile>
+    <ClCompile Include="connection_pool.cpp">
+      <Filter>connection_controls</Filter>
+    </ClCompile>
+    <ClCompile Include="configuration_manager.cpp" />
+    <ClCompile Include="logger.cpp">
+      <Filter>service\logger</Filter>
+    </ClCompile>
+    <ClCompile Include="message_queue.cpp">
+      <Filter>service\message</Filter>
+    </ClCompile>
+    <ClCompile Include="task_pool.cpp">
+      <Filter>service\task</Filter>
+    </ClCompile>
+    <ClCompile Include="safe_network.cpp">
+      <Filter>service\safe_network</Filter>
+    </ClCompile>
+    <ClCompile Include="datapackage.cpp">
+      <Filter>datapackage</Filter>
+    </ClCompile>
+    <ClCompile Include="packet_manager.cpp">
+      <Filter>datapackage</Filter>
+    </ClCompile>
+    <ClCompile Include="modules_loader.cpp">
+      <Filter>modules\loader</Filter>
+    </ClCompile>
+    <ClCompile Include="sending_async.cpp">
+      <Filter>service\sending</Filter>
+    </ClCompile>
+    <ClCompile Include="basic_request.cpp">
+      <Filter>modules\basic_request</Filter>
+    </ClCompile>
+    <ClCompile Include="uuid.cpp">
+      <Filter>id\uuid</Filter>
+    </ClCompile>
+    <ClCompile Include="file_rw_lock.cpp">
+      <Filter>service\file_rw_lock</Filter>
+    </ClCompile>
+    <ClCompile Include="uid.cpp">
+      <Filter>id\uid</Filter>
+    </ClCompile>
+    <ClCompile Include="user.cpp">
+      <Filter>modules\user</Filter>
+    </ClCompile>
+    <ClCompile Include="aes.cpp">
+      <Filter>encryption\AES</Filter>
+    </ClCompile>
+    <ClCompile Include="gmult.cpp">
+      <Filter>encryption\AES</Filter>
+    </ClCompile>
+    <ClCompile Include="aes_cpp.cpp">
+      <Filter>encryption\AES</Filter>
+    </ClCompile>
+    <ClCompile Include="md5.cpp">
+      <Filter>encryption\md5</Filter>
+    </ClCompile>
+    <ClCompile Include="base64.cpp">
+      <Filter>encryption\base64</Filter>
+    </ClCompile>
+    <ClCompile Include="base64_cpp.cpp">
+      <Filter>encryption\base64</Filter>
+    </ClCompile>
+    <ClCompile Include="online_user_collection.cpp">
+      <Filter>modules\user</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="rbslib">
+      <UniqueIdentifier>{59e53d86-b574-4b97-93b8-239dd16e8569}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="rbslib\headers">
+      <UniqueIdentifier>{0d2d787a-58ac-4348-9595-80e2c4bd9b27}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="rbslib\src">
+      <UniqueIdentifier>{9a19bff7-b2cb-4725-8187-42692bfcdde1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="json">
+      <UniqueIdentifier>{108e3308-4dcc-474b-946a-6a8c0c6d1e00}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="connection_controls">
+      <UniqueIdentifier>{4d101eef-37e5-4b06-9218-b739698d4136}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="service">
+      <UniqueIdentifier>{71d23430-0048-450a-ac7f-92e66073d00e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="service\logger">
+      <UniqueIdentifier>{0ea15842-a8ac-4b7e-897e-6ade3a662b46}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="service\message">
+      <UniqueIdentifier>{7a812d31-e30b-46b8-b7a8-c9cb05928c92}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="service\task">
+      <UniqueIdentifier>{d58325d7-8ed5-4d45-ada5-635dad06595d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="datapackage">
+      <UniqueIdentifier>{b68a2b57-54cb-450a-9d2b-81fbc7780e7a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="service\safe_network">
+      <UniqueIdentifier>{35cef403-5591-4034-a0df-40550650c249}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="id">
+      <UniqueIdentifier>{25361cf4-45a7-45ba-a097-6ee1f3c468b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="id\uuid">
+      <UniqueIdentifier>{43fecac4-d7fa-49b7-b5a0-c589da40cd5f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="modules">
+      <UniqueIdentifier>{fca49027-23ed-4e01-84ae-f23e8acd56b4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="modules\loader">
+      <UniqueIdentifier>{59f65742-6a4c-461c-9e0e-2f5974940b47}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="service\sending">
+      <UniqueIdentifier>{f6a30752-4b90-4414-ae36-7924041aad3d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="modules\basic_request">
+      <UniqueIdentifier>{fedff440-d4cc-47bb-a54b-4c4fcd1acdd5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="modules\user">
+      <UniqueIdentifier>{09ea46b5-bd00-4c93-9469-b1b50436ff18}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="id\uid">
+      <UniqueIdentifier>{9d1f2546-eb0b-4fa3-8216-e789cbdb2a6f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="service\file_rw_lock">
+      <UniqueIdentifier>{52c39c84-7849-4883-97a3-2feaf39e357b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="encryption">
+      <UniqueIdentifier>{37bafcc9-32ce-410b-bd2c-fb70165a623d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="encryption\AES">
+      <UniqueIdentifier>{e03b8e40-7467-4c6a-bf55-750fca09e41e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="encryption\md5">
+      <UniqueIdentifier>{d372c888-339a-4ca4-831e-f90a35ee72ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="encryption\base64">
+      <UniqueIdentifier>{83834969-5b74-410f-8e09-6169b04cab37}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ReadmeFiles">
+      <UniqueIdentifier>{fa7a148c-46d9-428f-95fb-6c14e78becff}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="BaseType.h">
+      <Filter>rbslib\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Buffer.h">
+      <Filter>rbslib\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="FileIO.h">
+      <Filter>rbslib\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Network.h">
+      <Filter>rbslib\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Storage.h">
+      <Filter>rbslib\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Streams.h">
+      <Filter>rbslib\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="cJSON.h">
+      <Filter>json</Filter>
+    </ClInclude>
+    <ClInclude Include="CJsonObject.h">
+      <Filter>json</Filter>
+    </ClInclude>
+    <ClInclude Include="connection_pool.h">
+      <Filter>connection_controls</Filter>
+    </ClInclude>
+    <ClInclude Include="configuration_manager.h" />
+    <ClInclude Include="logger.h">
+      <Filter>service\logger</Filter>
+    </ClInclude>
+    <ClInclude Include="message_queue.h">
+      <Filter>service\message</Filter>
+    </ClInclude>
+    <ClInclude Include="task_pool.h">
+      <Filter>service\task</Filter>
+    </ClInclude>
+    <ClInclude Include="datapackage.h">
+      <Filter>datapackage</Filter>
+    </ClInclude>
+    <ClInclude Include="safe_network.h">
+      <Filter>service\safe_network</Filter>
+    </ClInclude>
+    <ClInclude Include="packet_manager.h">
+      <Filter>datapackage</Filter>
+    </ClInclude>
+    <ClInclude Include="uuid.h">
+      <Filter>id\uuid</Filter>
+    </ClInclude>
+    <ClInclude Include="modules_loader.h">
+      <Filter>modules\loader</Filter>
+    </ClInclude>
+    <ClInclude Include="sending_async.h">
+      <Filter>service\sending</Filter>
+    </ClInclude>
+    <ClInclude Include="basic_request.h">
+      <Filter>modules\basic_request</Filter>
+    </ClInclude>
+    <ClInclude Include="user.h">
+      <Filter>modules\user</Filter>
+    </ClInclude>
+    <ClInclude Include="uid.h">
+      <Filter>id\uid</Filter>
+    </ClInclude>
+    <ClInclude Include="id_exception.h">
+      <Filter>id</Filter>
+    </ClInclude>
+    <ClInclude Include="file_rw_lock.h">
+      <Filter>service\file_rw_lock</Filter>
+    </ClInclude>
+    <ClInclude Include="online_user_collection.h">
+      <Filter>modules\user</Filter>
+    </ClInclude>
+    <ClInclude Include="aes.h">
+      <Filter>encryption\AES</Filter>
+    </ClInclude>
+    <ClInclude Include="gmult.h">
+      <Filter>encryption\AES</Filter>
+    </ClInclude>
+    <ClInclude Include="aes_cpp.h">
+      <Filter>encryption\AES</Filter>
+    </ClInclude>
+    <ClInclude Include="md5.h">
+      <Filter>encryption\md5</Filter>
+    </ClInclude>
+    <ClInclude Include="base64.h">
+      <Filter>encryption\base64</Filter>
+    </ClInclude>
+    <ClInclude Include="base64_cpp.h">
+      <Filter>encryption\base64</Filter>
+    </ClInclude>
+    <ClInclude Include="encryption_exception.h">
+      <Filter>encryption</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ReadmeFiles\Message.md">
+      <Filter>ReadmeFiles</Filter>
+    </None>
+    <None Include="README.md" />
+  </ItemGroup>
+</Project>

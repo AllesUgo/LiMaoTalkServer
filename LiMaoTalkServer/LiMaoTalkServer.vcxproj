@@ -1,0 +1,158 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|ARM">
+      <Configuration>Debug</Configuration>
+      <Platform>ARM</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|ARM">
+      <Configuration>Release</Configuration>
+      <Platform>ARM</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|ARM64">
+      <Configuration>Debug</Configuration>
+      <Platform>ARM64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|ARM64">
+      <Configuration>Release</Configuration>
+      <Platform>ARM64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x86">
+      <Configuration>Debug</Configuration>
+      <Platform>x86</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x86">
+      <Configuration>Release</Configuration>
+      <Platform>x86</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{41137970-c30e-4dda-9a2d-4f904ee03e12}</ProjectGuid>
+    <Keyword>Linux</Keyword>
+    <RootNamespace>LiMaoTalkServer</RootNamespace>
+    <MinimumVisualStudioVersion>15.0</MinimumVisualStudioVersion>
+    <ApplicationType>Linux</ApplicationType>
+    <ApplicationTypeRevision>1.0</ApplicationTypeRevision>
+    <TargetLinuxPlatform>Generic</TargetLinuxPlatform>
+    <LinuxProjectType>{D51BCBC9-82E9-4017-911E-C93873C4EA2B}</LinuxProjectType>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'" Label="Configuration">
+    <UseDebugLibraries>true</UseDebugLibraries>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'" Label="Configuration">
+    <UseDebugLibraries>false</UseDebugLibraries>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'" Label="Configuration">
+    <UseDebugLibraries>true</UseDebugLibraries>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'" Label="Configuration">
+    <UseDebugLibraries>false</UseDebugLibraries>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>WSL2_1_0</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <UseDebugLibraries>false</UseDebugLibraries>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'" Label="Configuration">
+    <UseDebugLibraries>false</UseDebugLibraries>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'" Label="Configuration">
+    <UseDebugLibraries>true</UseDebugLibraries>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings" />
+  <ImportGroup Label="Shared" />
+  <ImportGroup Label="PropertySheets" />
+  <PropertyGroup Label="UserMacros" />
+  <ItemGroup>
+    <ClCompile Include="aes.cpp" />
+    <ClCompile Include="aes_cpp.cpp" />
+    <ClCompile Include="base64.cpp" />
+    <ClCompile Include="base64_cpp.cpp" />
+    <ClCompile Include="basic_request.cpp" />
+    <ClCompile Include="Buffer.cpp" />
+    <ClCompile Include="cJSON.cpp" />
+    <ClCompile Include="CJsonObject.cpp" />
+    <ClCompile Include="configuration_manager.cpp" />
+    <ClCompile Include="connection_pool.cpp" />
+    <ClCompile Include="datapackage.cpp" />
+    <ClCompile Include="FileIO.cpp" />
+    <ClCompile Include="file_rw_lock.cpp" />
+    <ClCompile Include="gmult.cpp" />
+    <ClCompile Include="logger.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="md5.cpp" />
+    <ClCompile Include="message_queue.cpp" />
+    <ClCompile Include="modules_loader.cpp" />
+    <ClCompile Include="Network.cpp" />
+    <ClCompile Include="online_user_collection.cpp" />
+    <ClCompile Include="packet_manager.cpp" />
+    <ClCompile Include="safe_network.cpp" />
+    <ClCompile Include="sending_async.cpp" />
+    <ClCompile Include="Storage.cpp" />
+    <ClCompile Include="Streams.cpp" />
+    <ClCompile Include="task_pool.cpp" />
+    <ClCompile Include="uid.cpp" />
+    <ClCompile Include="user.cpp" />
+    <ClCompile Include="uuid.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="aes.h" />
+    <ClInclude Include="aes_cpp.h" />
+    <ClInclude Include="base64.h" />
+    <ClInclude Include="base64_cpp.h" />
+    <ClInclude Include="BaseType.h" />
+    <ClInclude Include="basic_request.h" />
+    <ClInclude Include="Buffer.h" />
+    <ClInclude Include="cJSON.h" />
+    <ClInclude Include="CJsonObject.h" />
+    <ClInclude Include="configuration_manager.h" />
+    <ClInclude Include="connection_pool.h" />
+    <ClInclude Include="datapackage.h" />
+    <ClInclude Include="encryption_exception.h" />
+    <ClInclude Include="FileIO.h" />
+    <ClInclude Include="file_rw_lock.h" />
+    <ClInclude Include="gmult.h" />
+    <ClInclude Include="id_exception.h" />
+    <ClInclude Include="logger.h" />
+    <ClInclude Include="md5.h" />
+    <ClInclude Include="message_queue.h" />
+    <ClInclude Include="modules_loader.h" />
+    <ClInclude Include="Network.h" />
+    <ClInclude Include="online_user_collection.h" />
+    <ClInclude Include="packet_manager.h" />
+    <ClInclude Include="sending_async.h" />
+    <ClInclude Include="Storage.h" />
+    <ClInclude Include="Streams.h" />
+    <ClInclude Include="task_pool.h" />
+    <ClInclude Include="safe_network.h" />
+    <ClInclude Include="uid.h" />
+    <ClInclude Include="user.h" />
+    <ClInclude Include="uuid.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="README.md" />
+    <None Include="ReadmeFiles\Message.md" />
+  </ItemGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <CppLanguageStandard>c++17</CppLanguageStandard>
+    </ClCompile>
+    <Link>
+      <LibraryDependencies>uuid;%(LibraryDependencies)</LibraryDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets" />
+</Project>
