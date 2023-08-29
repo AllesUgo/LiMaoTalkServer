@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "datapackage.h"
 #include "message_queue.h"
 namespace LiMao

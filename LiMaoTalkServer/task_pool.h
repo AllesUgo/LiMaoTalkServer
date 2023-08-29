@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <queue>
 #include <list>
 #include <functional>

@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <uuid/uuid.h>
 #include <string>
 #include <exception>

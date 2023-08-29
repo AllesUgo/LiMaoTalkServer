@@ -1,4 +1,4 @@
-#include "FileIO.h"
+﻿#include "FileIO.h"
 #include <memory>
 namespace fio = RbsLib::Storage::FileIO;
 void RbsLib::Storage::FileIO::File::ThrowIfNotOpen() const

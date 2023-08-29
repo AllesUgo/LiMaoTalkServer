@@ -1,4 +1,4 @@
-#include "uid.h"
+ï»¿#include "uid.h"
 #include "configuration_manager.h"
 #include "Buffer.h"
 #include "Storage.h"
@@ -16,7 +16,7 @@ uint64_t LiMao::ID::UID::Generate(void)
 		);
 		auto lock = LiMao::Config::GlobalFileRWLock::GetMutex(uid_file.Path());
 		lock->lock();
-		/*¼ì²éUIDÎÄ¼ş¼ĞÊÇ·ñ´æÔÚ*/
+		/*æ£€æŸ¥UIDæ–‡ä»¶å¤¹æ˜¯å¦å­˜åœ¨*/
 		if (!uid_file.IsExist())
 		{
 			std::filesystem::create_directories(uid_file.Path());
@@ -30,7 +30,7 @@ uint64_t LiMao::ID::UID::Generate(void)
 		}
 		catch (const RbsLib::Storage::FileIO::FileIOException& ex)
 		{
-			/*¿ÉÄÜÊÇÎÄ¼ş²»´æÔÚ*/
+			/*å¯èƒ½æ˜¯æ–‡ä»¶ä¸å­˜åœ¨*/
 			auto fp = uid_file["next_uid"].Open(
 				RbsLib::Storage::FileIO::OpenMode::Write | RbsLib::Storage::FileIO::OpenMode::Replace,
 				RbsLib::Storage::FileIO::SeekBase::begin, 0);

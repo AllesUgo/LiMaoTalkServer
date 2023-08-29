@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include <list>
 #include <string>
 #include <map>
@@ -6,7 +6,7 @@
 #include "uuid.h"
 #include "safe_network.h"
 #include "sending_async.h"
-//ÓÃÓÚ¹ÜÀí´¦ÀíÏûÏ¢´¦ÀíÄ£¿é
+//ç”¨äºç®¡ç†å¤„ç†æ¶ˆæ¯å¤„ç†æ¨¡å—
 
 namespace LiMao
 {
@@ -32,7 +32,7 @@ namespace LiMao
 		public:
 			virtual bool OnLoad(const LiMao::ID::UUID& module_uuid);
 			virtual bool OnUnload(void);
-			virtual bool OnMessage(LiMao::Data::DataPackage::DataPack& data,ConnectionInformation&info) = 0;//·µ»ØÖµÎªÕæ±íÊ¾ÏûÏ¢ÒÑ´¦ÀíÍê³É£¬Ó¦ÒÆ³ı¸ÃÏûÏ¢
+			virtual bool OnMessage(LiMao::Data::DataPackage::DataPack& data,ConnectionInformation&info) = 0;//è¿”å›å€¼ä¸ºçœŸè¡¨ç¤ºæ¶ˆæ¯å·²å¤„ç†å®Œæˆï¼Œåº”ç§»é™¤è¯¥æ¶ˆæ¯
 			virtual void OnConnectionClosed(const LiMao::Service::SafeNetwork& safe_connection);
 		};
 		class ModulesManager

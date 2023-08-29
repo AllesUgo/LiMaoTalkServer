@@ -1,4 +1,4 @@
-/* This is a public domain base64 implementation written by WEI Zhicheng. */
+﻿/* This is a public domain base64 implementation written by WEI Zhicheng. */
 
 #include "base64.h"
 

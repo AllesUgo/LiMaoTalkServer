@@ -1,4 +1,4 @@
-#include "logger.h"
+﻿#include "logger.h"
 #include <time.h>
 #include <cstdarg>
 void LiMao::Service::Logger::print_log(int level, const char* log_format, va_list lst)

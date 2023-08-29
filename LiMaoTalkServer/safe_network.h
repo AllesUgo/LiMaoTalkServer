@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "Network.h"
 #include <exception>
 namespace LiMao

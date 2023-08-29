@@ -1,4 +1,4 @@
-#include "message_queue.h"
+﻿#include "message_queue.h"
 
 LiMao::Service::MessageQueueException::MessageQueueException(Type type, const std::string& reason) noexcept
 {

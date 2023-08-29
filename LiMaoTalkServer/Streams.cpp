@@ -1,4 +1,4 @@
-#include "Streams.h"
+﻿#include "Streams.h"
 
 RbsLib::Streams::StringStream::StringStream(const std::string& str) noexcept
 {

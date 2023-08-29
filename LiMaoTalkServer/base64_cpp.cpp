@@ -1,4 +1,4 @@
-#include "base64_cpp.h"
+﻿#include "base64_cpp.h"
 #include "base64.h"
 std::string LiMao::Encryption::Base64::Encode(RbsLib::IBuffer const& buffer) noexcept
 {

@@ -1,4 +1,4 @@
-#include "basic_request.h"
+﻿#include "basic_request.h"
 #include "datapackage.h"
 #include "logger.h"
 bool LiMao::Modules::BasicRequest::OnLoad(const LiMao::ID::UUID&uuid)

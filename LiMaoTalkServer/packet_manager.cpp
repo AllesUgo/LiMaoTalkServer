@@ -1,4 +1,4 @@
-#include "packet_manager.h"
+﻿#include "packet_manager.h"
 
 LiMao::Data::DataPackage::PackManager::PackManager(uint64_t max_item_num):pack_queue(max_item_num)
 {

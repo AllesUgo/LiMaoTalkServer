@@ -1,4 +1,4 @@
-#include "configuration_manager.h"
+﻿#include "configuration_manager.h"
 #include "FileIO.h"
 #include "CJsonObject.h"
 #include "file_rw_lock.h"

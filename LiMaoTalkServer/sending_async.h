@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include <map>
 #include <functional>
 #include <mutex>
@@ -25,12 +25,12 @@ namespace LiMao
 			};
 			std::map<std::string, LiMao::Service::MessageQueue<SendingPack>*> safe_networks;
 			LiMao::Service::TaskPool pool;
-			std::mutex mutex;//·ÀÖ¹¶àÏß³Ì·¢ËÍÊ±·ÃÎÊmap³åÍ»
+			std::mutex mutex;//é˜²æ­¢å¤šçº¿ç¨‹å‘é€æ—¶è®¿é—®mapå†²çª
 		public:
 			SendingAsync(int keep_thread = 0);
-			//´Ó¶ÓÁĞÖĞ·¢ËÍ
+			//ä»é˜Ÿåˆ—ä¸­å‘é€
 			void Send(const std::string &queue_name,const LiMao::Service::SafeNetwork& network, const RbsLib::Buffer& buffer,std::function<void(bool)> send_finished_function=nullptr);
-			//ÎŞ¶ÓÁĞ·¢ËÍ
+			//æ— é˜Ÿåˆ—å‘é€
 			void Send(const LiMao::Service::SafeNetwork& network, const RbsLib::Buffer& buffer, std::function<void(bool)> send_finished_function = nullptr);
 		};
 	}

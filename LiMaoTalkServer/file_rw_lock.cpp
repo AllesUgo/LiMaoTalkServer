@@ -1,4 +1,4 @@
-#include "file_rw_lock.h"
+ï»¿#include "file_rw_lock.h"
 #include <thread>
 
 LiMao::Service::FileRWLock::FileRWLock::MutexGuard::MutexGuard(const std::string&path)
@@ -24,13 +24,13 @@ LiMao::Service::FileRWLock::FileRWLock::~FileRWLock() noexcept
 
 auto LiMao::Service::FileRWLock::FileRWLock::GetMutex(const std::string &file_path) -> std::shared_ptr<std::shared_mutex>
 {
-	/*²Ù×÷ÁÐ±í¼ÓËø*/
+	/*æ“ä½œåˆ—è¡¨åŠ é”*/
 	this->mutex.lock();
 	for (auto& it : this->rw_locks)
 	{
 		if (it.file_path==file_path)
 		{
-			/*ÊÇÍ¬Ò»¸öÎÄ¼þ,Ôö¼ÓÒýÓÃ¼ÆÊý²¢·µ»ØËøµÄ¹²ÏíÖ¸Õë,ÔÚ¹²ÏíÖ¸ÕëÊÍ·ÅÊ±ÒýÓÃ¼ÆÊý-1*/
+			/*æ˜¯åŒä¸€ä¸ªæ–‡ä»¶,å¢žåŠ å¼•ç”¨è®¡æ•°å¹¶è¿”å›žé”çš„å…±äº«æŒ‡é’ˆ,åœ¨å…±äº«æŒ‡é’ˆé‡Šæ”¾æ—¶å¼•ç”¨è®¡æ•°-1*/
 			it.ref_count++;
 			auto& rw_locks = this->rw_locks;
 			auto& safe_lock = this->mutex;
@@ -52,13 +52,13 @@ auto LiMao::Service::FileRWLock::FileRWLock::GetMutex(const std::string &file_pa
 			return ret;
 		}
 	}
-	/*ÁÐ±íÖÐÃ»ÓÐÏàÍ¬Ïî£¬¼ÓÈëÁÐ±í*/
+	/*åˆ—è¡¨ä¸­æ²¡æœ‰ç›¸åŒé¡¹ï¼ŒåŠ å…¥åˆ—è¡¨*/
 	rw_locks.push_back(MutexGuard(file_path));
 	for (auto& it : this->rw_locks)
 	{
 		if (file_path==it.file_path)
 		{
-			/*ÊÇÍ¬Ò»¸öÎÄ¼þ,Ôö¼ÓÒýÓÃ¼ÆÊý²¢·µ»ØËøµÄ¹²ÏíÖ¸Õë,ÔÚ¹²ÏíÖ¸ÕëÊÍ·ÅÊ±ÒýÓÃ¼ÆÊý-1*/
+			/*æ˜¯åŒä¸€ä¸ªæ–‡ä»¶,å¢žåŠ å¼•ç”¨è®¡æ•°å¹¶è¿”å›žé”çš„å…±äº«æŒ‡é’ˆ,åœ¨å…±äº«æŒ‡é’ˆé‡Šæ”¾æ—¶å¼•ç”¨è®¡æ•°-1*/
 			it.ref_count++;
 			auto& rw_locks = this->rw_locks;
 			auto& safe_lock = this->mutex;

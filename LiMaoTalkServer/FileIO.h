@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include <iostream>
 #include <exception>
 #include <cstring>
@@ -27,10 +27,10 @@ namespace RbsLib
 			enum class OpenMode
 			{
 				None = 0,
-				Read = 1,/*¿É¶Á*/
-				Write = 1 << 1,/*¿ÉÐ´£¬Ä¬ÈÏ´´½¨,ÒÑ´æÔÚÔò×·¼ÓÐ´*/
-				Replace = 1 << 2,/*Çå¿ÕÔ­ÓÐÎÄ¼þ*/
-				Bin = 1 << 3/*¶þ½øÖÆÄ£Ê½´ò¿ª*/,
+				Read = 1,/*å¯è¯»*/
+				Write = 1 << 1,/*å¯å†™ï¼Œé»˜è®¤åˆ›å»º,å·²å­˜åœ¨åˆ™è¿½åŠ å†™*/
+				Replace = 1 << 2,/*æ¸…ç©ºåŽŸæœ‰æ–‡ä»¶*/
+				Bin = 1 << 3/*äºŒè¿›åˆ¶æ¨¡å¼æ‰“å¼€*/,
 			};
 			RbsLib::Storage::FileIO::OpenMode operator|(RbsLib::Storage::FileIO::OpenMode l, RbsLib::Storage::FileIO::OpenMode r)noexcept;
 			RbsLib::Storage::FileIO::OpenMode operator&(RbsLib::Storage::FileIO::OpenMode l, RbsLib::Storage::FileIO::OpenMode r)noexcept;

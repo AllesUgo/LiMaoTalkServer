@@ -1,4 +1,4 @@
-#include "sending_async.h"
+ï»¿#include "sending_async.h"
 #include "logger.h"
 #include <thread>
 
@@ -26,23 +26,23 @@ void LiMao::Service::SendingAsync::Send(const std::string& queue_name, const LiM
 	std::unique_lock lock(this->mutex);
 	if (this->safe_networks.find(queue_name) == this->safe_networks.end())
 	{
-		/*µ±Ç°Ã»ÓĞÕâ¸ö¶ÓÁĞ£¬ÎªÆä´´½¨¶ÓÁĞ*/
+		/*å½“å‰æ²¡æœ‰è¿™ä¸ªé˜Ÿåˆ—ï¼Œä¸ºå…¶åˆ›å»ºé˜Ÿåˆ—*/
 		this->safe_networks[queue_name] = new LiMao::Service::MessageQueue<SendingPack>(-1);
 		this->safe_networks[queue_name]->AddItem(SendingPack(buffer, network, send_finished_function));
-		/*Îª¸Ã¶ÓÁĞ´´½¨´¦ÀíÏß³Ì*/
+		/*ä¸ºè¯¥é˜Ÿåˆ—åˆ›å»ºå¤„ç†çº¿ç¨‹*/
 		auto& mutex = this->mutex;
 		auto & safe_network = this->safe_networks;
 		std::thread([&mutex,&safe_network,queue_name]() {
-			/*È¡³öÏß³ÌËùÊô¶ÓÁĞ*/
+			/*å–å‡ºçº¿ç¨‹æ‰€å±é˜Ÿåˆ—*/
 			std::unique_lock lock(mutex);
 			if (safe_network.find(queue_name) == safe_network.end())
 			{
-				/*¶ÓÁĞÒÑ¾­±»É¾³ı»ò²»´æÔÚ*/
+				/*é˜Ÿåˆ—å·²ç»è¢«åˆ é™¤æˆ–ä¸å­˜åœ¨*/
 				return;
 			}
 			LiMao::Service::MessageQueue<SendingPack>* queue = safe_network[queue_name];
 			lock.unlock();
-			/*Ñ­»··¢ËÍ*/
+			/*å¾ªç¯å‘é€*/
 			while (1)
 			{
 				try
@@ -56,14 +56,14 @@ void LiMao::Service::SendingAsync::Send(const std::string& queue_name, const LiM
 				{
 					if (ex.type == LiMao::Service::MessageQueueException::Type::TimeOut)
 					{
-						/*¸ÃÁĞ±íÖĞÒÑÎŞÊı¾İ£¬ÒÆ³ı¸ÃÁĞ±í*/
+						/*è¯¥åˆ—è¡¨ä¸­å·²æ— æ•°æ®ï¼Œç§»é™¤è¯¥åˆ—è¡¨*/
 						safe_network.erase(queue_name);
 						delete queue;
 						break;
 					}
 					else
 					{
-						/*¶ÓÁĞÒì³££¬ÖØĞÂÅ×³ö*/
+						/*é˜Ÿåˆ—å¼‚å¸¸ï¼Œé‡æ–°æŠ›å‡º*/
 						throw;
 					}
 				}
@@ -72,14 +72,14 @@ void LiMao::Service::SendingAsync::Send(const std::string& queue_name, const LiM
 	}
 	else
 	{
-		/*ÒÑ¾­´æÔÚ¸Ã¶ÓÁĞ£¬¼ÓÈëµ½¶ÓÁĞ*/
+		/*å·²ç»å­˜åœ¨è¯¥é˜Ÿåˆ—ï¼ŒåŠ å…¥åˆ°é˜Ÿåˆ—*/
 		this->safe_networks[queue_name]->AddItem(SendingPack(buffer, network, send_finished_function));
 	}
 }
 
 void LiMao::Service::SendingAsync::Send(const LiMao::Service::SafeNetwork& network, const RbsLib::Buffer& buffer, std::function<void(bool)> send_finished_function)
 {
-	/*ÎŞ¶ÓÁĞ·¢ËÍ*/
+	/*æ— é˜Ÿåˆ—å‘é€*/
 	try
 	{
 		SendingPack(buffer, network, send_finished_function).Send();

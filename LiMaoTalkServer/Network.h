@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include <exception>
 #include <string>
 #include <mutex>
@@ -45,12 +45,12 @@ namespace RbsLib
 			class TCPClient;
 			class TCPConnection
 			{
-				/*Í¬Ò»Ê±¼äÍ¬Ò»Á¬½Ó¶ÔÏóÖ»ÄÜÓĞÒ»¸öÏß³Ì½øĞĞ¿½±´¡¢ÒÆ¶¯¡¢Îö¹¹*/
+				/*åŒä¸€æ—¶é—´åŒä¸€è¿æ¥å¯¹è±¡åªèƒ½æœ‰ä¸€ä¸ªçº¿ç¨‹è¿›è¡Œæ‹·è´ã€ç§»åŠ¨ã€ææ„*/
 			private:
 				SOCKET sock;
 				struct sockaddr_in connection_info;
 				int info_len;
-				std::mutex*mutex=nullptr;/*¶àÏß³Ì±£»¤ÒıÓÃ¼ÆÊıÆ÷*/
+				std::mutex*mutex=nullptr;/*å¤šçº¿ç¨‹ä¿æŠ¤å¼•ç”¨è®¡æ•°å™¨*/
 				int* reference_counter=nullptr;
 				TCPConnection(SOCKET sock,const struct sockaddr_in& connection_info,int info_len)noexcept;
 				friend class TCPServer;

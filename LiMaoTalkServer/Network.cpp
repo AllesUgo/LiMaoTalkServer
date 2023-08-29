@@ -1,4 +1,4 @@
-#include "Network.h"
+ï»¿#include "Network.h"
 
 namespace net = RbsLib::Network;
 
@@ -284,7 +284,7 @@ void RbsLib::Network::TCP::TCPConnection::Close(void)
 			*this->reference_counter -= 1;
 			if (*this->reference_counter <= 0)
 			{
-				/*ÒıÓÃ¼ÆÊıÆ÷Ğ¡ÓÚ0£¬ĞèÒª¹Ø±Õ²¢ÊÍ·Å*/
+				/*å¼•ç”¨è®¡æ•°å™¨å°äº0ï¼Œéœ€è¦å…³é—­å¹¶é‡Šæ”¾*/
 #ifdef WIN32
 				closesocket(this->sock);
 #endif // WIN32
@@ -298,7 +298,7 @@ void RbsLib::Network::TCP::TCPConnection::Close(void)
 			}
 			else
 			{
-				/*ÒıÓÃ¼ÆÊı´óÓÚ0*/
+				/*å¼•ç”¨è®¡æ•°å¤§äº0*/
 				this->reference_counter = nullptr;
 				this->mutex->unlock();
 				this->mutex = nullptr;
@@ -306,10 +306,10 @@ void RbsLib::Network::TCP::TCPConnection::Close(void)
 		}
 		else
 		{
-			this->mutex->unlock();//Î´ÆôÓÃÒıÓÃ¼ÆÊıÆ÷£¬Ö±½Ó½âËø
+			this->mutex->unlock();//æœªå¯ç”¨å¼•ç”¨è®¡æ•°å™¨ï¼Œç›´æ¥è§£é”
 		}
 	}
-	/*Èç¹ûMutexÎªnull£¬Ôò¸Ã¶ÔÏóÒ»¶¨·¢Éú¹ıÒÆ¶¯¹¹Ôì¡¢ÒÆ¶¯¿½±´»òÒÑ¾­ÊÍ·Å£¬ÎŞĞèÊÍ·ÅÈÎºÎ×ÊÔ´*/
+	/*å¦‚æœMutexä¸ºnullï¼Œåˆ™è¯¥å¯¹è±¡ä¸€å®šå‘ç”Ÿè¿‡ç§»åŠ¨æ„é€ ã€ç§»åŠ¨æ‹·è´æˆ–å·²ç»é‡Šæ”¾ï¼Œæ— éœ€é‡Šæ”¾ä»»ä½•èµ„æº*/
 }
 
 RbsLib::Network::TCP::TCPConnection RbsLib::Network::TCP::TCPClient::Connect(std::string ip, int port)

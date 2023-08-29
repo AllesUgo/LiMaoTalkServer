@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <stdint.h>
 #include "id_exception.h"
 namespace LiMao::ID

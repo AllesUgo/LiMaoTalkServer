@@ -1,4 +1,4 @@
-#include "modules_loader.h"
+ï»¿#include "modules_loader.h"
 #include "logger.h"
 static std::map<LiMao::ID::UUID, LiMao::Modules::IModule*> modules;
 LiMao::ID::UUID LiMao::Modules::ModulesManager::RegisterModule(IModule* module)
@@ -53,7 +53,7 @@ void LiMao::Modules::ModulesManager::UnloadAllModule(void)
     {
         if (true == module->second->OnUnload())
         {
-			/*¿ÉÒÔÐ¶ÔØ*/
+			/*å¯ä»¥å¸è½½*/
             delete module->second;
             module = modules.erase(module);
         }

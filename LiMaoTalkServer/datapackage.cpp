@@ -1,4 +1,4 @@
-#include "datapackage.h"
+﻿#include "datapackage.h"
 #include <cstring>
 #include <string>
 LiMao::Data::DataPackage::DataPackException::DataPackException(const std::string& reason) noexcept

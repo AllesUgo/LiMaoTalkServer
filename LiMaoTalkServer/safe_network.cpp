@@ -1,4 +1,4 @@
-#include "safe_network.h"
+﻿#include "safe_network.h"
 #include <cstring>
 #include <string>
 LiMao::Service::SafeNetwork::SafeNetwork(const RbsLib::Network::TCP::TCPConnection& connection, unsigned int max_pack_size)

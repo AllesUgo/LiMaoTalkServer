@@ -1,4 +1,4 @@
-#include "Buffer.h"
+﻿#include "Buffer.h"
 #include <cstring>
 RbsLib::BufferException::BufferException(const std::string& string)noexcept :error_reason(string) {}
 

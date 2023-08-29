@@ -1,4 +1,4 @@
-#include "online_user_collection.h"
+ï»¿#include "online_user_collection.h"
 #include "logger.h"
 #include "uid.h"
 #include <shared_mutex>
@@ -23,7 +23,7 @@ LiMao::Data::DataPackage::TextDataPack LiMao::Modules::UserControl::UserControlM
 		neb::CJsonObject json;
 		json.Add("ID", 101);
 		json.Add("State", 1);
-		json.Add("Message", "ÓÃ»§Ãû²»ºÏ·¨,ÓÃ»§Ãû³¤¶È±ØĞëÔÚ1-20×Ö½ÚÖ®¼ä");
+		json.Add("Message", "ç”¨æˆ·åä¸åˆæ³•,ç”¨æˆ·åé•¿åº¦å¿…é¡»åœ¨1-20å­—èŠ‚ä¹‹é—´");
 		return LiMao::Data::DataPackage::TextDataPack(json.ToString());
 	}
 	if (password.length() < 6 || password.length() > 20)
@@ -31,7 +31,7 @@ LiMao::Data::DataPackage::TextDataPack LiMao::Modules::UserControl::UserControlM
 		neb::CJsonObject json;
 		json.Add("ID", 101);
 		json.Add("State", 2);
-		json.Add("Message", "ÃÜÂë²»ºÏ·¨,ÃÜÂë³¤¶È±ØĞëÔÚ6-20×Ö½ÚÖ®¼ä");
+		json.Add("Message", "å¯†ç ä¸åˆæ³•,å¯†ç é•¿åº¦å¿…é¡»åœ¨6-20å­—èŠ‚ä¹‹é—´");
 		return LiMao::Data::DataPackage::TextDataPack(json.ToString());
 	}
 	try
@@ -145,7 +145,7 @@ LiMao::Data::DataPackage::TextDataPack LiMao::Modules::UserControl::UserControlM
 	}
 	try
 	{
-		/*»ñÈ¡µ±Ç°ÓÃ»§µÄºÃÓÑÁĞ±í*/
+		/*è·å–å½“å‰ç”¨æˆ·çš„å¥½å‹åˆ—è¡¨*/
 		us::User user;
 		user.uid = text_pack.uid;
 		user.token = text_pack.token;
@@ -156,13 +156,13 @@ LiMao::Data::DataPackage::TextDataPack LiMao::Modules::UserControl::UserControlM
 			{
 				TextPackWithLogin pack;
 				pack.id = 102;
-				pack.message = "ÒÑÊÇºÃÓÑ";
+				pack.message = "å·²æ˜¯å¥½å‹";
 				pack.token = text_pack.token;
 				pack.state = 3;
 				return pack.ToBuffer();
 			}
 		}
-		//Ìí¼ÓºÃÓÑÇëÇó
+		//æ·»åŠ å¥½å‹è¯·æ±‚
 		user.uid = text_pack.uid;
 		user.SendFriendRequest(friend_uid,text_pack.row_json_obj["data"]("Message"));
 		TextPackWithLogin pack;
@@ -197,14 +197,14 @@ LiMao::Data::DataPackage::TextDataPack LiMao::Modules::UserControl::UserControlM
 
 bool LiMao::Modules::UserControl::UserControlModule::OnLoad(const LiMao::ID::UUID& module_uuid)
 {
-	this->task_pool = std::make_shared<LiMao::Service::TaskPool>();
+	this->task_pool = new LiMao::Service::TaskPool;
 	this->task_pool->Run([this]() {
 		std::shared_lock<std::shared_mutex> lock(this->users_mutex);
 		lock.unlock();
 		while (!this->exit)
 		{
 			std::this_thread::sleep_for(std::chrono::seconds(10));
-			//ÊÕ¼¯ÔÚÏßÓÃ»§ÖĞtoken¹ıÆÚµÄÓÃ»§
+			//æ”¶é›†åœ¨çº¿ç”¨æˆ·ä¸­tokenè¿‡æœŸçš„ç”¨æˆ·
 			std::vector<std::uint64_t> expired_users;
 			lock.lock();
 			for (auto& it : this->users)
@@ -217,7 +217,7 @@ bool LiMao::Modules::UserControl::UserControlModule::OnLoad(const LiMao::ID::UUI
 			lock.unlock();
 			if (!expired_users.empty())
 			{
-				//É¾³ı¹ıÆÚÓÃ»§
+				//åˆ é™¤è¿‡æœŸç”¨æˆ·
 				std::unique_lock<std::shared_mutex> lock(this->users_mutex);
 				std::unique_lock<std::shared_mutex> lock2(this->online_connections_mutex);
 				for (auto& it : expired_users)
@@ -239,6 +239,7 @@ bool LiMao::Modules::UserControl::UserControlModule::OnLoad(const LiMao::ID::UUI
 bool LiMao::Modules::UserControl::UserControlModule::OnUnload(void)
 {
 	this->exit = true;
+	delete this->task_pool;
 	LiMao::Service::Logger::LogInfo("User module unloaded,uuid = %s", this->uuid.ToString().c_str());
 	return true;
 }

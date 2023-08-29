@@ -1,4 +1,4 @@
-#include "user.h"
+ï»¿#include "user.h"
 #include "configuration_manager.h"
 #include "FileIO.h"
 #include "base64_cpp.h"
@@ -77,7 +77,7 @@ auto LiMao::Modules::UserControl::User::Login(std::uint64_t uid, const std::stri
 	{
 		throw UserControlException("Invalid uid", 1);
 	}
-	/*¼ì²éÓÃ»§ÊÇ·ñ´æÔÚ*/
+	/*æ£€æŸ¥ç”¨æˆ·æ˜¯å¦å­˜åœ¨*/
 	RbsLib::Storage::StorageFile file(LiMao::Config::ConfigManager::UserDataPath());
 	if (file[std::to_string(uid)]["user.json"].IsExist() == false)
 	{
@@ -169,7 +169,7 @@ std::vector<uint64_t> LiMao::Modules::UserControl::User::GetFriendList() const
 	}
 	auto fp = user_dir["friends.json"].Open(RbsLib::Storage::FileIO::OpenMode::Read,
 		RbsLib::Storage::FileIO::SeekBase::begin);
-	/*¼ì²éÎÄ¼ş´óĞ¡*/
+	/*æ£€æŸ¥æ–‡ä»¶å¤§å°*/
 	auto file_size = user_dir["friends.json"].GetFileSize();
 	if (file_size > 1024 * 1024)
 	{
@@ -206,14 +206,14 @@ void LiMao::Modules::UserControl::User::AddFriend(std::uint64_t uid) const
 	{
 		throw UserControlException("Invalid uid");
 	}
-	//¼ì²éµ±Ç°ÓÃ»§Ä¿Â¼ÊÇ·ñ´æÔÚ
+	//æ£€æŸ¥å½“å‰ç”¨æˆ·ç›®å½•æ˜¯å¦å­˜åœ¨
 	auto user_dir = GetUserDir(this->uid);
-	//¼ì²éºÃÓÑÄ¿Â¼ÊÇ·ñ´æÔÚ
+	//æ£€æŸ¥å¥½å‹ç›®å½•æ˜¯å¦å­˜åœ¨
 	if (CheckUserExist(uid) == false)
 	{
 		throw UserControlException("User not exists", 1);
 	}
-	//¼ì²éºÃÓÑÊÇ·ñÒÑ¾­´æÔÚ
+	//æ£€æŸ¥å¥½å‹æ˜¯å¦å·²ç»å­˜åœ¨
 	auto friends = GetFriendList();
 	for (auto& friend_uid : friends)
 	{
@@ -222,7 +222,7 @@ void LiMao::Modules::UserControl::User::AddFriend(std::uint64_t uid) const
 			throw UserControlException("Friend already exists", 1);
 		}
 	}
-	//¼ì²éºÃÓÑÊÇ·ñÒÑ¾­Ìí¼Ó×Ô¼º
+	//æ£€æŸ¥å¥½å‹æ˜¯å¦å·²ç»æ·»åŠ è‡ªå·±
 	auto friend_user = User("", uid, "");
 	auto friend_friends = friend_user.GetFriendList();
 	for (auto& friend_uid : friend_friends)
@@ -232,7 +232,7 @@ void LiMao::Modules::UserControl::User::AddFriend(std::uint64_t uid) const
 			throw UserControlException("Friend list not async");
 		}
 	}
-	//Ìí¼ÓºÃÓÑ
+	//æ·»åŠ å¥½å‹
 	std::string this_friends_json = this->ReadTextFile(user_dir["friends.json"], 1024 * 1024);
 	neb::CJsonObject this_friends(this_friends_json);
 	if (this_friends.GetValueType("Friends") == cJSON_Array)
@@ -251,7 +251,7 @@ void LiMao::Modules::UserControl::User::AddFriend(std::uint64_t uid) const
 			throw UserControlException("Invalid friends.json: value type error");
 		}
 	}
-	//¶ÁÈ¡ºÃÓÑµÄºÃÓÑÁĞ±í
+	//è¯»å–å¥½å‹çš„å¥½å‹åˆ—è¡¨
 	std::string f_friends_json = this->ReadTextFile(GetUserDir(friend_user.uid)["friends.json"], 1024 * 1024);
 	neb::CJsonObject f_friends(f_friends_json);
 	if (f_friends.GetValueType("Friends") == cJSON_Array)
@@ -270,7 +270,7 @@ void LiMao::Modules::UserControl::User::AddFriend(std::uint64_t uid) const
 			throw UserControlException("Invalid friends.json: value type error");
 		}
 	}
-	//Ğ´ÈëºÃÓÑÁĞ±í
+	//å†™å…¥å¥½å‹åˆ—è¡¨
 	this->ReplaceWriteTetxtFile(user_dir["friends.json"], this_friends.ToString());
 	this->ReplaceWriteTetxtFile(GetUserDir(friend_user.uid)["friends.json"], f_friends.ToString());
 }
@@ -278,18 +278,18 @@ void LiMao::Modules::UserControl::User::AddFriend(std::uint64_t uid) const
 void LiMao::Modules::UserControl::User::SendFriendRequest(std::uint64_t uid, const std::string& message) const
 {
 	if (uid == 0) throw UserControlException("Invalid uid");
-	//¼ì²éµ±Ç°ÓÃ»§Ä¿Â¼ÊÇ·ñ´æÔÚ
+	//æ£€æŸ¥å½“å‰ç”¨æˆ·ç›®å½•æ˜¯å¦å­˜åœ¨
 	if (this->uid == 0) throw UserControlException("Invalid uid");
 	if (CheckUserExist(this->uid) == false)
 	{
 		throw UserControlException("User not exists");
 	}
-	//¼ì²éºÃÓÑÄ¿Â¼ÊÇ·ñ´æÔÚ
+	//æ£€æŸ¥å¥½å‹ç›®å½•æ˜¯å¦å­˜åœ¨
 	if (CheckUserExist(uid) == false)
 	{
 		throw UserControlException("User not exists",1);
 	}
-	//¼ì²éºÃÓÑÊÇ·ñÒÑ¾­´æÔÚ
+	//æ£€æŸ¥å¥½å‹æ˜¯å¦å·²ç»å­˜åœ¨
 	auto friends = this->GetFriendList();
 	for (auto& friend_uid : friends)
 	{
@@ -298,7 +298,7 @@ void LiMao::Modules::UserControl::User::SendFriendRequest(std::uint64_t uid, con
 			throw UserControlException("Friend already exists",1);
 		}
 	}
-	//¼ì²éÄ¿±êÊÇ·ñÒÑÓĞ¸ÃÓÃ»§µÄºÃÓÑÇëÇó
+	//æ£€æŸ¥ç›®æ ‡æ˜¯å¦å·²æœ‰è¯¥ç”¨æˆ·çš„å¥½å‹è¯·æ±‚
 	User friend_user("", uid, "");
 	auto requests = friend_user.GetFriendRequest(this->uid);
 	for (auto& request : requests)
@@ -308,14 +308,14 @@ void LiMao::Modules::UserControl::User::SendFriendRequest(std::uint64_t uid, con
 			throw UserControlException("Friend request already sended",1);
 		}
 	}
-	//Ìí¼ÓºÃÓÑÇëÇó
-	//¶ÁÈ¡Ä¿±êºÃÓÑÇëÇóÁĞ±í
+	//æ·»åŠ å¥½å‹è¯·æ±‚
+	//è¯»å–ç›®æ ‡å¥½å‹è¯·æ±‚åˆ—è¡¨
 	neb::CJsonObject json;
 	try
 	{
 		std::string json_text=ReadTextFile(GetUserDir(friend_user.uid)["friend_request.json"], 1024 * 1024);
 		json = neb::CJsonObject(json_text);
-		//¼ì²éÊÇ·ñ´æÔÚRequests
+		//æ£€æŸ¥æ˜¯å¦å­˜åœ¨Requests
 		if (json.KeyExist("Requests") == false)
 		{
 			json.AddEmptySubArray("Requests");
@@ -325,21 +325,21 @@ void LiMao::Modules::UserControl::User::SendFriendRequest(std::uint64_t uid, con
 	{
 		json.AddEmptySubArray("Requests");
 	}
-	//Ìí¼ÓºÃÓÑÇëÇó
+	//æ·»åŠ å¥½å‹è¯·æ±‚
 	neb::CJsonObject obj;
 	obj.Add("UID",this->uid);
 	obj.Add("Message", message);
 	json["Requests"].Add(obj);
-	//Ğ´ÈëºÃÓÑÇëÇóÁĞ±í
+	//å†™å…¥å¥½å‹è¯·æ±‚åˆ—è¡¨
 	ReplaceWriteTetxtFile(GetUserDir(friend_user.uid)["friend_request.json"], json.ToFormattedString());
 }
 
 std::map<std::uint64_t, std::string> LiMao::Modules::UserControl::User::GetFriendRequest(std::uint64_t uid) const
 {
-	//¼ì²éµ±Ç°ÓÃ»§Ä¿Â¼ÊÇ·ñ´æÔÚ
+	//æ£€æŸ¥å½“å‰ç”¨æˆ·ç›®å½•æ˜¯å¦å­˜åœ¨
 	if (this->uid == 0) throw UserControlException("Invalid uid");
 	if (!CheckUserExist(this->uid)) throw UserControlException("User not exists");
-	//¶ÁÈ¡µ±Ç°ÓÃ»§µÄºÃÓÑÇëÇó
+	//è¯»å–å½“å‰ç”¨æˆ·çš„å¥½å‹è¯·æ±‚
 	try
 	{
 		std::string list=ReadTextFile(this->GetUserDir(this->uid)["friend_request.json"], 1024 * 1024);
@@ -370,10 +370,10 @@ std::map<std::uint64_t, std::string> LiMao::Modules::UserControl::User::GetFrien
 
 void LiMao::Modules::UserControl::User::RemoveFriendRequest(std::uint64_t uid) const
 {
-	//¼ì²éµ±Ç°ÓÃ»§Ä¿Â¼ÊÇ·ñ´æÔÚ
+	//æ£€æŸ¥å½“å‰ç”¨æˆ·ç›®å½•æ˜¯å¦å­˜åœ¨
 	if (this->uid == 0) throw UserControlException("Invalid uid");
 	if (!CheckUserExist(this->uid)) throw UserControlException("User not exists");
-	//¶ÁÈ¡µ±Ç°ÓÃ»§µÄºÃÓÑÇëÇó
+	//è¯»å–å½“å‰ç”¨æˆ·çš„å¥½å‹è¯·æ±‚
 	try
 	{
 		std::string list = ReadTextFile(this->GetUserDir(this->uid)["friend_request.json"], 1024 * 1024);
