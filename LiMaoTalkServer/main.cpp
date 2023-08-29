@@ -90,7 +90,6 @@ void MainServer::Start(void)
 					{
 						LiMao::Service::SafeNetwork network(connection, 1024 * 1024);
 						auto Buffer = network.Recv();
-						std::cout << Buffer.ToString() << std::endl;
 						if (Buffer.GetSize() != 0)
 						{
 							LiMao::Data::DataPackage::TextDataPack data(Buffer);

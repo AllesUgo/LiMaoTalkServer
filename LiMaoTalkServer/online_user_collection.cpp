@@ -162,6 +162,23 @@ LiMao::Data::DataPackage::TextDataPack LiMao::Modules::UserControl::UserControlM
 				return pack.ToBuffer();
 			}
 		}
+		//尝试通知好友
+		std::shared_lock<std::shared_mutex> lock1(this->online_connections_mutex);
+		std::shared_lock<std::shared_mutex> lock2(this->users_mutex);
+		if (this->user_connections.find(friend_uid) != this->user_connections.end()&&
+			this->users.find(friend_uid)!=this->users.end())
+		{
+			neb::CJsonObject json;
+			json.Add("ID", 103);
+			json.Add("Data", text_pack.row_json_obj["Data"]);
+			json.Add("State", 100);
+			json.Add("Token", this->users[friend_uid].token);
+			json.Add("UID", friend_uid);
+			json.AddEmptySubObject("Data");
+			json["Data"].Add("RequestUID", text_pack.uid);
+			json["Data"].Add("Message", text_pack.row_json_obj["Data"]("Message"));
+			this->user_connections[friend_uid]->Send(LiMao::Data::DataPackage::TextDataPack(json.ToFormattedString()).ToBuffer());
+		}
 		//添加好友请求
 		user.uid = text_pack.uid;
 		user.SendFriendRequest(friend_uid,text_pack.row_json_obj["data"]("Message"));
