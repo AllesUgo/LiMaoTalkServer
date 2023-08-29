@@ -300,7 +300,7 @@ void LiMao::Modules::UserControl::User::SendFriendRequest(std::uint64_t uid, con
 	}
 	//检查目标是否已有该用户的好友请求
 	User friend_user("", uid, "");
-	auto requests = friend_user.GetFriendRequest(this->uid);
+	auto requests = friend_user.GetFriendRequest();
 	for (auto& request : requests)
 	{
 		if (request.first == this->uid)
@@ -334,7 +334,7 @@ void LiMao::Modules::UserControl::User::SendFriendRequest(std::uint64_t uid, con
 	ReplaceWriteTetxtFile(GetUserDir(friend_user.uid)["friend_request.json"], json.ToFormattedString());
 }
 
-std::map<std::uint64_t, std::string> LiMao::Modules::UserControl::User::GetFriendRequest(std::uint64_t uid) const
+std::map<std::uint64_t, std::string> LiMao::Modules::UserControl::User::GetFriendRequest() const
 {
 	//检查当前用户目录是否存在
 	if (this->uid == 0) throw UserControlException("Invalid uid");

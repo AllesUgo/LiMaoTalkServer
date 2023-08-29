@@ -169,7 +169,7 @@ LiMao::Data::DataPackage::TextDataPack LiMao::Modules::UserControl::UserControlM
 			this->users.find(friend_uid)!=this->users.end())
 		{
 			neb::CJsonObject json;
-			json.Add("ID", 103);
+			json.Add("ID", 102);
 			json.Add("Data", text_pack.row_json_obj["Data"]);
 			json.Add("State", 100);
 			json.Add("Token", this->users[friend_uid].token);
@@ -208,6 +208,44 @@ LiMao::Data::DataPackage::TextDataPack LiMao::Modules::UserControl::UserControlM
 			pack.token = text_pack.token;
 			pack.state = -1;
 			return pack.ToBuffer();
+		}
+	}
+}
+
+LiMao::Data::DataPackage::TextDataPack LiMao::Modules::UserControl::UserControlModule::get_friend_requests_message(LiMao::Data::DataPackage::TextDataPack& pack)
+{
+	namespace us=LiMao::Modules::UserControl;
+	TextPackWithLogin text_pack(pack.ToBuffer().ToString());
+	if (!this->check_token(text_pack.uid, text_pack.token))
+	{
+		return TextPackWithLogin(text_pack.ID(), text_pack.uid, 1, "", "Invalid token").ToBuffer();
+	}
+	try
+	{
+		us::User user;
+		user.uid = text_pack.uid;
+		auto requests = user.GetFriendRequest();
+		TextPackWithLogin pack(text_pack.ID(), text_pack.uid, 0, text_pack.token, "Success");
+		pack.row_json_obj.AddEmptySubObject("Data");
+		pack.row_json_obj["Data"].AddEmptySubArray("RequestList");
+		for (const auto& it : requests)
+		{
+			neb::CJsonObject obj;
+			obj.Add("RequestUID", std::to_string(it.first));
+			obj.Add("Message", it.second);
+			pack.row_json_obj["Data"]["RequestList"].Add(obj);
+		}
+		return pack.ToBuffer();
+	}
+	catch (const UserControlException& ex)
+	{
+		if (ex.is_normal_exception)
+		{
+			return TextPackWithLogin(text_pack.ID(),text_pack.uid,-1,text_pack.token,ex.what()).ToBuffer();
+		}
+		else
+		{
+			return TextPackWithLogin(text_pack.ID(),text_pack.uid,-1,text_pack.token,"Server error").ToBuffer();
 		}
 	}
 }
@@ -276,6 +314,9 @@ bool LiMao::Modules::UserControl::UserControlModule::OnMessage(LiMao::Data::Data
 		case 102://Request friend
 			info.sending_service.Send(info.safe_connection, this->request_friend(dynamic_cast<LiMao::Data::DataPackage::TextDataPack&>(data)).ToBuffer());
 			break;
+		case 103://Get friend requests
+			info.sending_service.Send(info.safe_connection, this->get_friend_requests_message(dynamic_cast<LiMao::Data::DataPackage::TextDataPack&>(data)).ToBuffer());
+			break;
 		default:
 			return false;
 		}
@@ -311,6 +352,9 @@ LiMao::Modules::UserControl::TextPackWithLogin::TextPackWithLogin(const std::str
 	std::stringstream(this->row_json_obj("UID")) >> this->uid;
 	this->message = this->row_json_obj("Message");
 }
+
+LiMao::Modules::UserControl::TextPackWithLogin::TextPackWithLogin(int id,uint64_t uid, int state,const std::string& token, const std::string& message)
+	:uid(uid), token(token), message(message),TextDataPack(id,state){}
 
 RbsLib::Buffer LiMao::Modules::UserControl::TextPackWithLogin::ToBuffer(void) const
 {

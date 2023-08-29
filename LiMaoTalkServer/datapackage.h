@@ -32,6 +32,7 @@ namespace LiMao
 				TextDataPack(const RbsLib::IBuffer& buffer);
 				TextDataPack(const std::string& json_data);
 				TextDataPack() noexcept;
+				TextDataPack(int id, int state) noexcept;
 				void Parse(const RbsLib::IBuffer& buffer);
 				int32_t ID(void) const override;
 				virtual RbsLib::Buffer ToBuffer(void) const;

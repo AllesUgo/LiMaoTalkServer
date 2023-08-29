@@ -43,7 +43,7 @@ namespace LiMao::Modules::UserControl
 		std::vector<uint64_t> GetFriendList()const;
 		void AddFriend(std::uint64_t uid)const;
 		void SendFriendRequest(std::uint64_t uid, const std::string& message)const;
-		std::map<std::uint64_t,std::string> GetFriendRequest(std::uint64_t uid)const;
+		std::map<std::uint64_t,std::string> GetFriendRequest()const;
 		void RemoveFriendRequest(std::uint64_t uid)const;
 		bool IsTokenAllow(void)const noexcept;
 		static bool IsTokenAllow(const std::string& token)noexcept;

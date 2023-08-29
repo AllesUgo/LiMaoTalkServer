@@ -95,9 +95,6 @@ void MainServer::Start(void)
 							LiMao::Data::DataPackage::TextDataPack data(Buffer);
 							LiMao::Service::Logger::LogInfo("Recv pack from %s, ID=%d,State=%d",connection.GetAddress().c_str(), data.ID(), data.state);
 							LiMao::Modules::ModulesManager::DealMessage(data, LiMao::Modules::ConnectionInformation(network, sending_service));
-							//data.id += 1;
-							//data.state += 1;
-							//sending_service.Send("10086", network,data.ToBuffer(), [](bool is_ok) {LiMao::Service::Logger::LogInfo("Send finish:%d",is_ok); });
 						}
 						pool.Add(connection);
 					}
@@ -115,6 +112,11 @@ void MainServer::Start(void)
 					{
 						LiMao::Modules::ModulesManager::DealConnectionClosed(connection);
 						LiMao::Service::Logger::LogError(ex.what());
+					}
+					catch (...)
+					{
+						LiMao::Modules::ModulesManager::DealConnectionClosed(connection);
+						LiMao::Service::Logger::LogError("Unknown error");
 					}
 					});
 			}

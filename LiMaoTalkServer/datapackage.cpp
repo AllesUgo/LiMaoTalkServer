@@ -21,6 +21,9 @@ LiMao::Data::DataPackage::TextDataPack::TextDataPack(const std::string& json_dat
 
 LiMao::Data::DataPackage::TextDataPack::TextDataPack() noexcept {}
 
+LiMao::Data::DataPackage::TextDataPack::TextDataPack(int id, int state) noexcept
+	:id(id), state(state) {}
+
 void LiMao::Data::DataPackage::TextDataPack::Parse(const RbsLib::IBuffer& buffer)
 {
 	if (buffer.GetLength() == 0) throw DataPackException("Create text data pack failed,buffer size is zero");
