@@ -290,7 +290,7 @@ void LiMao::Modules::UserControl::User::SendFriendRequest(std::uint64_t uid, con
 		throw UserControlException("User not exists",1);
 	}
 	//检查好友是否已经存在
-	auto friends = GetFriendList();
+	auto friends = this->GetFriendList();
 	for (auto& friend_uid : friends)
 	{
 		if (friend_uid == uid)

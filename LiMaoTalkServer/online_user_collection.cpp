@@ -102,14 +102,96 @@ LiMao::Data::DataPackage::TextDataPack LiMao::Modules::UserControl::UserControlM
 
 LiMao::Data::DataPackage::TextDataPack LiMao::Modules::UserControl::UserControlModule::request_friend(LiMao::Data::DataPackage::TextDataPack& pack)
 {
+	namespace us=LiMao::Modules::UserControl;
 	TextPackWithLogin text_pack(pack.ToBuffer().ToString());
 	if (!this->check_token(text_pack.uid, text_pack.token))
 	{
 		TextPackWithLogin pack;
-		pack.id= 102;
+		pack.id = 102;
 		pack.message = "Invalid token";
 		pack.token = text_pack.token;
 		pack.state = 1;
+		pack.uid = text_pack.uid;
+		return pack.ToBuffer();
+	}
+	if (!text_pack.row_json_obj["Data"].KeyExist("FriendUID"))
+	{
+		TextPackWithLogin pack;
+		pack.id = 102;
+		pack.message = "Friend UID not found";
+		pack.token = text_pack.token;
+		pack.state = 2;
+		return pack.ToBuffer();
+	}
+	uint64_t friend_uid = 0;
+	std::stringstream(text_pack.row_json_obj["Data"]("FriendUID")) >> friend_uid;
+	if (friend_uid == 0)
+	{
+		TextPackWithLogin pack;
+		pack.id = 102;
+		pack.message = "Invalide friend uid";
+		pack.token = text_pack.token;
+		pack.state = -1;
+		return pack.ToBuffer();
+	}
+	if (friend_uid == text_pack.uid)
+	{
+		TextPackWithLogin pack;
+		pack.id = 102;
+		pack.message = "Can not add self as friend";
+		pack.token = text_pack.token;
+		pack.state = 4;
+		return pack.ToBuffer();
+	}
+	try
+	{
+		/*获取当前用户的好友列表*/
+		us::User user;
+		user.uid = text_pack.uid;
+		user.token = text_pack.token;
+		auto friends = user.GetFriendList();
+		for (auto it : friends)
+		{
+			if (it == friend_uid)
+			{
+				TextPackWithLogin pack;
+				pack.id = 102;
+				pack.message = "已是好友";
+				pack.token = text_pack.token;
+				pack.state = 3;
+				return pack.ToBuffer();
+			}
+		}
+		//添加好友请求
+		user.uid = text_pack.uid;
+		user.SendFriendRequest(friend_uid,text_pack.row_json_obj["data"]("Message"));
+		TextPackWithLogin pack;
+		pack.id = 102;
+		pack.message = "Success";
+		pack.token = text_pack.token;
+		pack.state = 0;
+		return pack.ToBuffer();
+	}
+	catch (const UserControlException&ex)
+	{
+		if (ex.is_normal_exception)
+		{
+			TextPackWithLogin pack;
+			pack.id = 102;
+			pack.message = ex.what();
+			pack.token = text_pack.token;
+			pack.state = -1;
+			return pack.ToBuffer();
+		}
+		else
+		{
+			TextPackWithLogin pack;
+			pack.id = 102;
+			pack.message = "Server error";
+			pack.token = text_pack.token;
+			pack.state = -1;
+			return pack.ToBuffer();
+		}
 	}
 }
 
@@ -172,6 +254,9 @@ bool LiMao::Modules::UserControl::UserControlModule::OnMessage(LiMao::Data::Data
 			break;
 		case 101://regist
 			info.sending_service.Send(info.safe_connection, this->regist_message(dynamic_cast<LiMao::Data::DataPackage::TextDataPack&>(data)).ToBuffer());
+			break;
+		case 102://Request friend
+			info.sending_service.Send(info.safe_connection, this->request_friend(dynamic_cast<LiMao::Data::DataPackage::TextDataPack&>(data)).ToBuffer());
 			break;
 		default:
 			return false;

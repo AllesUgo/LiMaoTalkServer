@@ -13,7 +13,7 @@ namespace LiMao::Modules::UserControl
 
 	public:
 		std::string token;
-		std::uint64_t uid;
+		std::uint64_t uid=0;
 		std::string message;
 		TextPackWithLogin(void)noexcept;
 		TextPackWithLogin(const std::string& text);
