@@ -102,15 +102,15 @@ LiMao::Data::DataPackage::TextDataPack LiMao::Modules::UserControl::UserControlM
 
 LiMao::Data::DataPackage::TextDataPack LiMao::Modules::UserControl::UserControlModule::request_friend(LiMao::Data::DataPackage::TextDataPack& pack)
 {
-	namespace us=LiMao::Modules::UserControl;
+	namespace us = LiMao::Modules::UserControl;
 	TextPackWithLogin text_pack(pack.ToBuffer().ToString());
 	if (!this->check_token(text_pack.uid, text_pack.token))
 	{
-		return TextPackWithLogin(text_pack.ID(), text_pack.uid, -1, "", "Invalide token").ToBuffer();
+		return TextPackWithLogin(text_pack.ID(), text_pack.uid, 1, "", "Invalide token").ToBuffer();
 	}
 	if (!text_pack.row_json_obj["Data"].KeyExist("FriendUID"))
 	{
-		return TextPackWithLogin(text_pack.ID(), text_pack.uid, 1, text_pack.token, "Key:FriendUID not found").ToBuffer();
+		return TextPackWithLogin(text_pack.ID(), text_pack.uid, 2, text_pack.token, "Key:FriendUID not found").ToBuffer();
 	}
 	uint64_t friend_uid = 0;
 	std::stringstream(text_pack.row_json_obj["Data"]("FriendUID")) >> friend_uid;
@@ -139,8 +139,8 @@ LiMao::Data::DataPackage::TextDataPack LiMao::Modules::UserControl::UserControlM
 		//尝试通知好友
 		std::shared_lock<std::shared_mutex> lock1(this->online_connections_mutex);
 		std::shared_lock<std::shared_mutex> lock2(this->users_mutex);
-		if (this->user_connections.find(friend_uid) != this->user_connections.end()&&
-			this->users.find(friend_uid)!=this->users.end())
+		if (this->user_connections.find(friend_uid) != this->user_connections.end() &&
+			this->users.find(friend_uid) != this->users.end())
 		{
 			neb::CJsonObject json;
 			json.Add("ID", 102);
@@ -155,10 +155,10 @@ LiMao::Data::DataPackage::TextDataPack LiMao::Modules::UserControl::UserControlM
 		}
 		//添加好友请求
 		user.uid = text_pack.uid;
-		user.SendFriendRequest(friend_uid,text_pack.row_json_obj["data"]("Message"));
+		user.SendFriendRequest(friend_uid, text_pack.row_json_obj["data"]("Message"));
 		return TextPackWithLogin(text_pack.ID(), text_pack.uid, 0, text_pack.token, "Success").ToBuffer();
 	}
-	catch (const UserControlException&ex)
+	catch (const UserControlException& ex)
 	{
 		if (ex.is_normal_exception)
 		{
@@ -173,7 +173,7 @@ LiMao::Data::DataPackage::TextDataPack LiMao::Modules::UserControl::UserControlM
 
 LiMao::Data::DataPackage::TextDataPack LiMao::Modules::UserControl::UserControlModule::get_friend_requests_message(LiMao::Data::DataPackage::TextDataPack& pack)
 {
-	namespace us=LiMao::Modules::UserControl;
+	namespace us = LiMao::Modules::UserControl;
 	TextPackWithLogin text_pack(pack.ToBuffer().ToString());
 	if (!this->check_token(text_pack.uid, text_pack.token))
 	{
@@ -200,11 +200,60 @@ LiMao::Data::DataPackage::TextDataPack LiMao::Modules::UserControl::UserControlM
 	{
 		if (ex.is_normal_exception)
 		{
-			return TextPackWithLogin(text_pack.ID(),text_pack.uid,-1,text_pack.token,ex.what()).ToBuffer();
+			return TextPackWithLogin(text_pack.ID(), text_pack.uid, -1, text_pack.token, ex.what()).ToBuffer();
 		}
 		else
 		{
-			return TextPackWithLogin(text_pack.ID(),text_pack.uid,-1,text_pack.token,"Server error").ToBuffer();
+			return TextPackWithLogin(text_pack.ID(), text_pack.uid, -1, text_pack.token, "Server error").ToBuffer();
+		}
+	}
+}
+
+LiMao::Data::DataPackage::TextDataPack LiMao::Modules::UserControl::UserControlModule::agree_friend_request_message(LiMao::Data::DataPackage::TextDataPack& pack)
+{
+	TextPackWithLogin text_pack(pack.ToBuffer().ToString());
+	if (!this->check_token(text_pack.uid, text_pack.token))
+	{
+		return TextPackWithLogin(text_pack.ID(), text_pack.uid, 1, "", "Invalid token").ToBuffer();
+	}
+	namespace us = LiMao::Modules::UserControl;
+	uint64_t allow_uid = 0;
+	std::stringstream(text_pack.row_json_obj["Data"]("AgreeUID")) >> allow_uid;
+	bool is_agree;
+	if (!allow_uid)
+	{
+		return TextPackWithLogin(text_pack.ID(), text_pack.uid, 2, text_pack.token, "Invalid agree uid").ToBuffer();
+	}
+	if (!text_pack.row_json_obj["Data"].Get("Agree", is_agree))
+	{
+		return TextPackWithLogin(text_pack.ID(), text_pack.uid, 4, text_pack.token, "Invalid agree").ToBuffer();
+	}
+	try
+	{
+		us::User user;
+		user.uid = text_pack.uid;
+		auto requests = user.GetFriendRequest();
+		for (const auto& it : requests)
+		{
+			if (it.first == allow_uid)
+			{
+				if (is_agree) user.AddFriend(allow_uid);
+				user.RemoveFriendRequest(allow_uid);
+				return TextPackWithLogin(text_pack.ID(), text_pack.uid, 0, text_pack.token, "Success").ToBuffer();
+			}
+		}
+		return TextPackWithLogin(text_pack.ID(), text_pack.uid, 3, text_pack.token, "AgreeUID not requset friend").ToBuffer();
+	}
+	catch (const UserControlException& ex)
+	{
+		if (ex.is_normal_exception)
+		{
+			return TextPackWithLogin(text_pack.ID(), text_pack.uid, -1, text_pack.token, ex.what()).ToBuffer();
+		}
+		else
+		{
+			LiMao::Service::Logger::LogError("User control module: Agree friend request message error:%s", ex.what());
+			return TextPackWithLogin(text_pack.ID(), text_pack.uid, -1, text_pack.token, "Server error").ToBuffer();
 		}
 	}
 }
@@ -273,8 +322,11 @@ bool LiMao::Modules::UserControl::UserControlModule::OnMessage(LiMao::Data::Data
 		case 102://Request friend
 			info.sending_service.Send(info.safe_connection, this->request_friend(dynamic_cast<LiMao::Data::DataPackage::TextDataPack&>(data)).ToBuffer());
 			break;
-		case 103://Get friend requests
+		case 103://Get friend requests list
 			info.sending_service.Send(info.safe_connection, this->get_friend_requests_message(dynamic_cast<LiMao::Data::DataPackage::TextDataPack&>(data)).ToBuffer());
+			break;
+		case 104://Agree friend request
+			info.sending_service.Send(info.safe_connection, this->agree_friend_request_message(dynamic_cast<LiMao::Data::DataPackage::TextDataPack&>(data)).ToBuffer());
 			break;
 		default:
 			return false;
@@ -312,8 +364,8 @@ LiMao::Modules::UserControl::TextPackWithLogin::TextPackWithLogin(const std::str
 	this->message = this->row_json_obj("Message");
 }
 
-LiMao::Modules::UserControl::TextPackWithLogin::TextPackWithLogin(int id,uint64_t uid, int state,const std::string& token, const std::string& message)
-	:uid(uid), token(token), message(message),TextDataPack(id,state){}
+LiMao::Modules::UserControl::TextPackWithLogin::TextPackWithLogin(int id, uint64_t uid, int state, const std::string& token, const std::string& message)
+	:uid(uid), token(token), message(message), TextDataPack(id, state) {}
 
 RbsLib::Buffer LiMao::Modules::UserControl::TextPackWithLogin::ToBuffer(void) const
 {

@@ -233,9 +233,15 @@ void LiMao::Modules::UserControl::User::AddFriend(std::uint64_t uid) const
 		}
 	}
 	//添加好友
-	std::string this_friends_json = this->ReadTextFile(user_dir["friends.json"], 1024 * 1024);
-	neb::CJsonObject this_friends(this_friends_json);
-	if (this_friends.GetValueType("Friends") == cJSON_Array)
+	//读取自己的好友列表
+	neb::CJsonObject this_friends;
+	if (user_dir["friends.json"].IsExist())
+	{
+		std::string this_friends_json;
+		this_friends_json = this->ReadTextFile(user_dir["friends.json"], 1024 * 1024);
+		this_friends.Parse(this_friends_json);
+	}
+	if (this_friends.KeyExist("Friends") && this_friends.GetValueType("Friends") == cJSON_Array)
 	{
 		this_friends["Friends"].Add(uid);
 	}
@@ -244,7 +250,7 @@ void LiMao::Modules::UserControl::User::AddFriend(std::uint64_t uid) const
 		if (this_friends.KeyExist("Friends") == false)
 		{
 			this_friends.AddEmptySubArray("Friends");
-			this_friends.Add("Friends", uid);
+			this_friends["Friends"].Add(std::to_string(uid));
 		}
 		else
 		{
@@ -252,9 +258,13 @@ void LiMao::Modules::UserControl::User::AddFriend(std::uint64_t uid) const
 		}
 	}
 	//读取好友的好友列表
-	std::string f_friends_json = this->ReadTextFile(GetUserDir(friend_user.uid)["friends.json"], 1024 * 1024);
-	neb::CJsonObject f_friends(f_friends_json);
-	if (f_friends.GetValueType("Friends") == cJSON_Array)
+	neb::CJsonObject f_friends;
+	if (GetUserDir(friend_user.uid)["friends.json"].IsExist())
+	{
+		std::string f_friends_json = this->ReadTextFile(GetUserDir(friend_user.uid)["friends.json"], 1024 * 1024);
+		f_friends.Parse(f_friends_json);
+	}
+	if (f_friends.KeyExist("Friends") && f_friends.GetValueType("Friends") == cJSON_Array)
 	{
 		f_friends["Friends"].Add(this->uid);
 	}
@@ -263,7 +273,7 @@ void LiMao::Modules::UserControl::User::AddFriend(std::uint64_t uid) const
 		if (f_friends.KeyExist("Friends") == false)
 		{
 			f_friends.AddEmptySubArray("Friends");
-			f_friends.Add("Friends", this->uid);
+			f_friends["Friends"].Add(std::to_string(this->uid));
 		}
 		else
 		{
@@ -327,7 +337,7 @@ void LiMao::Modules::UserControl::User::SendFriendRequest(std::uint64_t uid, con
 	}
 	//添加好友请求
 	neb::CJsonObject obj;
-	obj.Add("UID",this->uid);
+	obj.Add("UID", this->uid);
 	obj.Add("Message", message);
 	json["Requests"].Add(obj);
 	//写入好友请求列表
@@ -349,11 +359,9 @@ std::map<std::uint64_t, std::string> LiMao::Modules::UserControl::User::GetFrien
 			std::map<std::uint64_t, std::string> requests;
 			for (int i = 0; i < json["Requests"].GetArraySize(); ++i)
 			{
-				std::uint64_t temp_uid;
-				std::string temp_message;
-				json["Requests"][i].Get("UID", temp_uid);
-				json["Requests"][i].Get("Message", temp_message);
-				requests[temp_uid] = temp_message;
+				std::uint64_t temp_uid = 0;
+				std::stringstream(json["Requests"][i]("UID")) >> temp_uid;
+				requests[temp_uid] = json["Requests"][i]("Message");
 			}
 			return requests;
 		}
@@ -382,8 +390,8 @@ void LiMao::Modules::UserControl::User::RemoveFriendRequest(std::uint64_t uid) c
 		{
 			for (int i = 0; i < json["Requests"].GetArraySize(); ++i)
 			{
-				std::uint64_t temp_uid;
-				json["Requests"][i].Get("UID", temp_uid);
+				std::uint64_t temp_uid=0;
+				std::stringstream(json["Requests"][i]("UID"))>>temp_uid;
 				if (temp_uid == uid)
 				{
 					json["Requests"].Delete(i);

@@ -35,6 +35,7 @@ namespace LiMao::Modules::UserControl
 		LiMao::Data::DataPackage::TextDataPack login_message(LiMao::Data::DataPackage::TextDataPack& pack,LiMao::Service::SafeNetwork&network);
 		LiMao::Data::DataPackage::TextDataPack request_friend(LiMao::Data::DataPackage::TextDataPack& pack);
 		LiMao::Data::DataPackage::TextDataPack get_friend_requests_message(LiMao::Data::DataPackage::TextDataPack& pack);
+		LiMao::Data::DataPackage::TextDataPack agree_friend_request_message(LiMao::Data::DataPackage::TextDataPack& pack);
 	public:
 		// 通过 IModule 继承
 		bool OnLoad(const LiMao::ID::UUID& module_uuid) override;
