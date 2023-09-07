@@ -39,7 +39,7 @@ namespace LiMao::Modules::UserControl
 		static bool CheckUserExist(std::uint64_t uid);
 		static auto GetUserDir(std::uint64_t uid) -> RbsLib::Storage::StorageFile;
 		static std::string ReadTextFile(const RbsLib::Storage::StorageFile& file,uint64_t max_size);
-		static void ReplaceWriteTetxtFile(const RbsLib::Storage::StorageFile& file, const std::string&text);
+		static void ReplaceWriteTextFile(const RbsLib::Storage::StorageFile& file, const std::string&text);
 		std::vector<uint64_t> GetFriendList()const;
 		void AddFriend(std::uint64_t uid)const;
 		void SendFriendRequest(std::uint64_t uid, const std::string& message)const;
@@ -47,5 +47,6 @@ namespace LiMao::Modules::UserControl
 		void RemoveFriendRequest(std::uint64_t uid)const;
 		bool IsTokenAllow(void)const noexcept;
 		static bool IsTokenAllow(const std::string& token)noexcept;
+		static std::string GetUserName(int64_t uid);
 	};
 }

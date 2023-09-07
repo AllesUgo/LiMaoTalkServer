@@ -258,6 +258,38 @@ LiMao::Data::DataPackage::TextDataPack LiMao::Modules::UserControl::UserControlM
 	}
 }
 
+LiMao::Data::DataPackage::TextDataPack LiMao::Modules::UserControl::UserControlModule::get_username_with_uid(LiMao::Data::DataPackage::TextDataPack& pack)
+{
+	TextPackWithLogin text_pack(pack.ToBuffer().ToString());
+	if (!this->check_token(text_pack.uid, text_pack.token))
+	{
+		return TextPackWithLogin(text_pack.ID(), text_pack.uid, 1, "", "Invalid token").ToBuffer();
+	}
+	namespace us = LiMao::Modules::UserControl;
+	uint64_t get_uid = 0;
+	std::stringstream(text_pack.row_json_obj["Data"]("UID")) >> get_uid;
+	try
+	{
+		std::string username = User::GetUserName(get_uid);
+		neb::CJsonObject data;
+		data.Add("UID", std::to_string(get_uid));
+		data.Add("UserName", username);
+		return TextPackWithLogin(text_pack.ID(), text_pack.uid, 0, text_pack.token, "Success", data).ToBuffer();
+	}
+	catch (const UserControlException& ex)
+	{
+		if (ex.is_normal_exception)
+		{
+			return TextPackWithLogin(text_pack.ID(), text_pack.uid, -1, text_pack.token, ex.what()).ToBuffer();
+		}
+		else
+		{
+			LiMao::Service::Logger::LogError("User control module: Get username with uid error:%s", ex.what());
+			return TextPackWithLogin(text_pack.ID(), text_pack.uid, -1, text_pack.token, "Server error").ToBuffer();
+		}
+	}
+}
+
 bool LiMao::Modules::UserControl::UserControlModule::OnLoad(const LiMao::ID::UUID& module_uuid)
 {
 	this->task_pool = new LiMao::Service::TaskPool;
@@ -328,6 +360,9 @@ bool LiMao::Modules::UserControl::UserControlModule::OnMessage(LiMao::Data::Data
 		case 104://Agree friend request
 			info.sending_service.Send(info.safe_connection, this->agree_friend_request_message(dynamic_cast<LiMao::Data::DataPackage::TextDataPack&>(data)).ToBuffer());
 			break;
+		case 105:
+			info.sending_service.Send(info.safe_connection, this->get_username_with_uid(dynamic_cast<LiMao::Data::DataPackage::TextDataPack&>(data)).ToBuffer());
+			break;
 		default:
 			return false;
 		}
@@ -366,6 +401,12 @@ LiMao::Modules::UserControl::TextPackWithLogin::TextPackWithLogin(const std::str
 
 LiMao::Modules::UserControl::TextPackWithLogin::TextPackWithLogin(int id, uint64_t uid, int state, const std::string& token, const std::string& message)
 	:uid(uid), token(token), message(message), TextDataPack(id, state) {}
+
+LiMao::Modules::UserControl::TextPackWithLogin::TextPackWithLogin(int id, uint64_t uid, int state, const std::string& token, const std::string& message, const neb::CJsonObject& data)
+	:uid(uid), token(token), message(message), TextDataPack(id, state)
+{
+	this->row_json_obj.Add("Data",data);
+}
 
 RbsLib::Buffer LiMao::Modules::UserControl::TextPackWithLogin::ToBuffer(void) const
 {

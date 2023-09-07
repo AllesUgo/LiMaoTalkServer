@@ -18,6 +18,7 @@ namespace LiMao::Modules::UserControl
 		TextPackWithLogin(void)noexcept;
 		TextPackWithLogin(const std::string& text);
 		TextPackWithLogin(int id,uint64_t uid,int state, const std::string& token, const std::string& message);
+		TextPackWithLogin(int id, uint64_t uid, int state, const std::string& token, const std::string& message,const neb::CJsonObject&data);
 		RbsLib::Buffer ToBuffer(void) const override;
 		
 	};
@@ -36,6 +37,7 @@ namespace LiMao::Modules::UserControl
 		LiMao::Data::DataPackage::TextDataPack request_friend(LiMao::Data::DataPackage::TextDataPack& pack);
 		LiMao::Data::DataPackage::TextDataPack get_friend_requests_message(LiMao::Data::DataPackage::TextDataPack& pack);
 		LiMao::Data::DataPackage::TextDataPack agree_friend_request_message(LiMao::Data::DataPackage::TextDataPack& pack);
+		LiMao::Data::DataPackage::TextDataPack get_username_with_uid(LiMao::Data::DataPackage::TextDataPack& pack);
 	public:
 		// 通过 IModule 继承
 		bool OnLoad(const LiMao::ID::UUID& module_uuid) override;

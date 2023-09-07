@@ -147,7 +147,7 @@ std::string LiMao::Modules::UserControl::User::ReadTextFile(const RbsLib::Storag
 	return std::string(json_buffer.get());
 }
 
-void LiMao::Modules::UserControl::User::ReplaceWriteTetxtFile(const RbsLib::Storage::StorageFile& file, const std::string& text)
+void LiMao::Modules::UserControl::User::ReplaceWriteTextFile(const RbsLib::Storage::StorageFile& file, const std::string& text)
 {
 	auto mutex = LiMao::Config::GlobalFileRWLock::GetMutex(file.Path());
 	std::unique_lock<std::shared_mutex> lock(*mutex);
@@ -179,18 +179,16 @@ std::vector<uint64_t> LiMao::Modules::UserControl::User::GetFriendList() const
 	}
 	auto buffer = fp.Read(file_size);
 	lock.unlock();
-	std::unique_ptr<char[]> json_buffer(new char[buffer.GetLength() + 1]);
-	memcpy(json_buffer.get(), buffer.Data(), buffer.GetLength());
-	json_buffer[buffer.GetLength()] = 0;
-	neb::CJsonObject json(json_buffer.get());
+	neb::CJsonObject json(buffer.ToString());
 	if (json.GetValueType("Friends") == cJSON_Array)
 	{
 		std::vector<std::uint64_t> friends(json["Friends"].GetArraySize());
 		for (int i = 0; i < json["Friends"].GetArraySize(); ++i)
 		{
-			uint64_t temp_uid;
-			json["Friends"].Get(i, temp_uid);
-			friends[i] = temp_uid;
+			uint64_t temp_uid=0;
+			std::stringstream(json["Friends"](i)) >> temp_uid;
+			temp_uid ? friends[i] = temp_uid : throw UserControlException(std::string("Friends list:")
+				+ user_dir["friends.json"].Path() + " have error uid:" + json["Friends"](i));
 		}
 		return friends;
 	}
@@ -281,8 +279,8 @@ void LiMao::Modules::UserControl::User::AddFriend(std::uint64_t uid) const
 		}
 	}
 	//写入好友列表
-	this->ReplaceWriteTetxtFile(user_dir["friends.json"], this_friends.ToString());
-	this->ReplaceWriteTetxtFile(GetUserDir(friend_user.uid)["friends.json"], f_friends.ToString());
+	this->ReplaceWriteTextFile(user_dir["friends.json"], this_friends.ToString());
+	this->ReplaceWriteTextFile(GetUserDir(friend_user.uid)["friends.json"], f_friends.ToString());
 }
 
 void LiMao::Modules::UserControl::User::SendFriendRequest(std::uint64_t uid, const std::string& message) const
@@ -341,7 +339,7 @@ void LiMao::Modules::UserControl::User::SendFriendRequest(std::uint64_t uid, con
 	obj.Add("Message", message);
 	json["Requests"].Add(obj);
 	//写入好友请求列表
-	ReplaceWriteTetxtFile(GetUserDir(friend_user.uid)["friend_request.json"], json.ToFormattedString());
+	ReplaceWriteTextFile(GetUserDir(friend_user.uid)["friend_request.json"], json.ToFormattedString());
 }
 
 std::map<std::uint64_t, std::string> LiMao::Modules::UserControl::User::GetFriendRequest() const
@@ -395,7 +393,7 @@ void LiMao::Modules::UserControl::User::RemoveFriendRequest(std::uint64_t uid) c
 				if (temp_uid == uid)
 				{
 					json["Requests"].Delete(i);
-					ReplaceWriteTetxtFile(this->GetUserDir(this->uid)["friend_request.json"], json.ToString());
+					ReplaceWriteTextFile(this->GetUserDir(this->uid)["friend_request.json"], json.ToString());
 					return;
 				}
 			}
@@ -432,4 +430,20 @@ bool LiMao::Modules::UserControl::User::IsTokenAllow(const std::string& token) n
 	{
 		return false;
 	}
+}
+
+std::string LiMao::Modules::UserControl::User::GetUserName(int64_t uid)
+{
+	try
+	{
+		auto file=GetUserDir(uid);
+		std::string text = ReadTextFile(file["user.json"], 1024 * 1024);
+		neb::CJsonObject json(text);
+		return json("UserName");
+	}
+	catch (const UserControlException&)
+	{
+		throw UserControlException("User not exists",1);
+	}
+
 }
