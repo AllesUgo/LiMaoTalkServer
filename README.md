@@ -13,7 +13,7 @@
 ### 编译
 #### Linux
 ```shell
-sudo sudo apt install uuid-dev libsqlite3-dev libfmt-dev g++
+sudo apt install uuid-dev libsqlite3-dev libfmt-dev g++
 g++ -std=c++17 -o server *.cpp -luuid -O3
 ```
 
