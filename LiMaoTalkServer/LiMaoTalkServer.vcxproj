@@ -86,6 +86,7 @@
     <ClCompile Include="CJsonObject.cpp" />
     <ClCompile Include="configuration_manager.cpp" />
     <ClCompile Include="connection_pool.cpp" />
+    <ClCompile Include="DataBase.cpp" />
     <ClCompile Include="datapackage.cpp" />
     <ClCompile Include="FileIO.cpp" />
     <ClCompile Include="file_rw_lock.cpp" />
@@ -100,6 +101,7 @@
     <ClCompile Include="packet_manager.cpp" />
     <ClCompile Include="safe_network.cpp" />
     <ClCompile Include="sending_async.cpp" />
+    <ClCompile Include="sqlite_cpp.cpp" />
     <ClCompile Include="Storage.cpp" />
     <ClCompile Include="Streams.cpp" />
     <ClCompile Include="task_pool.cpp" />
@@ -119,6 +121,7 @@
     <ClInclude Include="CJsonObject.h" />
     <ClInclude Include="configuration_manager.h" />
     <ClInclude Include="connection_pool.h" />
+    <ClInclude Include="DataBase.h" />
     <ClInclude Include="datapackage.h" />
     <ClInclude Include="encryption_exception.h" />
     <ClInclude Include="FileIO.h" />
@@ -133,6 +136,7 @@
     <ClInclude Include="online_user_collection.h" />
     <ClInclude Include="packet_manager.h" />
     <ClInclude Include="sending_async.h" />
+    <ClInclude Include="sqlite_cpp.h" />
     <ClInclude Include="Storage.h" />
     <ClInclude Include="Streams.h" />
     <ClInclude Include="task_pool.h" />
@@ -150,7 +154,7 @@
       <CppLanguageStandard>c++17</CppLanguageStandard>
     </ClCompile>
     <Link>
-      <LibraryDependencies>uuid;%(LibraryDependencies)</LibraryDependencies>
+      <LibraryDependencies>uuid;sqlite3;fmt;%(LibraryDependencies)</LibraryDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

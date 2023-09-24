@@ -18,6 +18,7 @@
 #include "FileIO.h"
 #include "base64_cpp.h"
 #include "online_user_collection.h"
+#include "sqlite_cpp.h"
 class MainServer
 {
 private:
@@ -31,6 +32,27 @@ public:
 
 int main()
 {
+	try
+	{
+		LiMao::DataBase::SQLite database = LiMao::DataBase::SQLite::Open("test.db");
+		auto sen = database;
+		std::cout << sen.IsTableExist("qq")<<std::endl;
+		auto p = database.Exec("select * from qq");
+		int i = 0;
+		for (auto x : p)
+		{
+			std::cout << x.first << ':';
+			for (auto s : x.second)
+			{
+				std::cout << s << ' ';
+			}
+			std::cout << std::endl;
+		}
+	}
+	catch (const std::exception& ex)
+	{
+		std::cout << "err:" << ex.what() << std::endl;
+	}
 	LiMao::Config::ConfigManager::SetConfigPath("config.json");
 	LiMao::Config::ConfigManager::LocalAddress("0.0.0.0");
 	LiMao::Config::ConfigManager::LocalPort(12345);

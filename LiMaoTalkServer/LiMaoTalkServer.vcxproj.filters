@@ -87,6 +87,10 @@
     <ClCompile Include="online_user_collection.cpp">
       <Filter>modules\user</Filter>
     </ClCompile>
+    <ClCompile Include="sqlite_cpp.cpp">
+      <Filter>database</Filter>
+    </ClCompile>
+    <ClCompile Include="DataBase.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="rbslib">
@@ -163,6 +167,9 @@
     </Filter>
     <Filter Include="ReadmeFiles">
       <UniqueIdentifier>{fa7a148c-46d9-428f-95fb-6c14e78becff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="database">
+      <UniqueIdentifier>{34468443-1bde-4d7e-9966-1fe6aca1a8e2}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -259,6 +266,12 @@
     </ClInclude>
     <ClInclude Include="encryption_exception.h">
       <Filter>encryption</Filter>
+    </ClInclude>
+    <ClInclude Include="sqlite_cpp.h">
+      <Filter>database</Filter>
+    </ClInclude>
+    <ClInclude Include="DataBase.h">
+      <Filter>database</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
