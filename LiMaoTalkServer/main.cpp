@@ -19,6 +19,7 @@
 #include "base64_cpp.h"
 #include "online_user_collection.h"
 #include "sqlite_cpp.h"
+#include "sessions.h"
 class MainServer
 {
 private:
@@ -32,33 +33,25 @@ public:
 
 int main()
 {
-	try
-	{
-		LiMao::DataBase::SQLite database = LiMao::DataBase::SQLite::Open("test.db");
-		auto sen = database;
-		std::cout << sen.IsTableExist("qq")<<std::endl;
-		auto p = database.Exec("select * from qq");
-		int i = 0;
-		for (auto x : p)
-		{
-			std::cout << x.first << ':';
-			for (auto s : x.second)
-			{
-				std::cout << s << ' ';
-			}
-			std::cout << std::endl;
-		}
-	}
-	catch (const std::exception& ex)
-	{
-		std::cout << "err:" << ex.what() << std::endl;
-	}
 	LiMao::Config::ConfigManager::SetConfigPath("config.json");
 	LiMao::Config::ConfigManager::LocalAddress("0.0.0.0");
 	LiMao::Config::ConfigManager::LocalPort(12345);
 	LiMao::Config::ConfigManager::UidPoolDir("uid_pool");
 	LiMao::Config::ConfigManager::UserDataPath("user_pool");
+	LiMao::Config::ConfigManager::UserMessageDatabasePath("test.db");
 	LiMao::Config::ConfigManager::SaveConfig();
+	try
+	{
+		//LiMao::DataBase::SQLite database = LiMao::DataBase::SQLite::Open(LiMao::Config::ConfigManager::UserMessageDatabasePath().c_str());
+		auto session_uuid = LiMao::ID::UUID::Generate();
+		LiMao::Modules::UserControl::Sessions::Session session = LiMao::ID::UUID("0a88eafd-315b-47c2-8dcf-74a7aeaf49d7");
+		//session.AddMembers({ LiMao::ID::UUID::Generate() });
+		session.DeleteThisSession();
+	}
+	catch (const std::exception&ex)
+	{
+		std::cout << "err:" << ex.what() << std::endl;
+	}
 	MainServer server;
 	LiMao::Service::Logger::LogInfo("finished");
 	//for (auto& it : uuid_lst) LiMao::Service::Logger::LogInfo(it.ToString().c_str());

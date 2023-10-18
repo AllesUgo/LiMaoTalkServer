@@ -5,6 +5,7 @@
 #include "modules_loader.h"
 #include "user.h"
 #include "task_pool.h"
+#include "sqlite_cpp.h"
 namespace LiMao::Modules::UserControl
 {
 	class TextPackWithLogin:public LiMao::Data::DataPackage::TextDataPack
@@ -20,7 +21,6 @@ namespace LiMao::Modules::UserControl
 		TextPackWithLogin(int id,uint64_t uid,int state, const std::string& token, const std::string& message);
 		TextPackWithLogin(int id, uint64_t uid, int state, const std::string& token, const std::string& message,const neb::CJsonObject&data);
 		RbsLib::Buffer ToBuffer(void) const override;
-		
 	};
 	class UserControlModule:public LiMao::Modules::IModule
 	{
@@ -31,6 +31,7 @@ namespace LiMao::Modules::UserControl
 		std::shared_mutex users_mutex,online_connections_mutex;
 		LiMao::Service::TaskPool* task_pool;
 		bool exit = false;
+
 		bool check_token(std::uint64_t user_id, std::string token)noexcept;
 		LiMao::Data::DataPackage::TextDataPack regist_message(LiMao::Data::DataPackage::TextDataPack&pack) const;
 		LiMao::Data::DataPackage::TextDataPack login_message(LiMao::Data::DataPackage::TextDataPack& pack,LiMao::Service::SafeNetwork&network);
@@ -38,6 +39,7 @@ namespace LiMao::Modules::UserControl
 		LiMao::Data::DataPackage::TextDataPack get_friend_requests_message(LiMao::Data::DataPackage::TextDataPack& pack);
 		LiMao::Data::DataPackage::TextDataPack agree_friend_request_message(LiMao::Data::DataPackage::TextDataPack& pack);
 		LiMao::Data::DataPackage::TextDataPack get_username_with_uid(LiMao::Data::DataPackage::TextDataPack& pack);
+		LiMao::Data::DataPackage::TextDataPack send_message_to_friend(LiMao::Data::DataPackage::TextDataPack& pack);
 	public:
 		// 通过 IModule 继承
 		bool OnLoad(const LiMao::ID::UUID& module_uuid) override;

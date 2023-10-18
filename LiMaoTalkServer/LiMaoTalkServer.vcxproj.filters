@@ -91,6 +91,9 @@
       <Filter>database</Filter>
     </ClCompile>
     <ClCompile Include="DataBase.cpp" />
+    <ClCompile Include="sessions.cpp">
+      <Filter>modules\user</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="rbslib">
@@ -273,11 +276,20 @@
     <ClInclude Include="DataBase.h">
       <Filter>database</Filter>
     </ClInclude>
+    <ClInclude Include="sessions.h">
+      <Filter>modules\user</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadmeFiles\Message.md">
       <Filter>ReadmeFiles</Filter>
     </None>
     <None Include="..\README.md" />
+    <None Include="Database.md">
+      <Filter>ReadmeFiles</Filter>
+    </None>
+    <None Include="Config.md">
+      <Filter>ReadmeFiles</Filter>
+    </None>
   </ItemGroup>
 </Project>

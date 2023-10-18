@@ -101,6 +101,7 @@
     <ClCompile Include="packet_manager.cpp" />
     <ClCompile Include="safe_network.cpp" />
     <ClCompile Include="sending_async.cpp" />
+    <ClCompile Include="sessions.cpp" />
     <ClCompile Include="sqlite_cpp.cpp" />
     <ClCompile Include="Storage.cpp" />
     <ClCompile Include="Streams.cpp" />
@@ -136,6 +137,7 @@
     <ClInclude Include="online_user_collection.h" />
     <ClInclude Include="packet_manager.h" />
     <ClInclude Include="sending_async.h" />
+    <ClInclude Include="sessions.h" />
     <ClInclude Include="sqlite_cpp.h" />
     <ClInclude Include="Storage.h" />
     <ClInclude Include="Streams.h" />
@@ -147,15 +149,22 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\README.md" />
+    <None Include="Config.md" />
+    <None Include="Database.md" />
     <None Include="ReadmeFiles\Message.md" />
   </ItemGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <CppLanguageStandard>c++17</CppLanguageStandard>
+      <CppLanguageStandard>c++2a</CppLanguageStandard>
     </ClCompile>
     <Link>
       <LibraryDependencies>uuid;sqlite3;fmt;%(LibraryDependencies)</LibraryDependencies>
     </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <CppLanguageStandard>c++2a</CppLanguageStandard>
+    </ClCompile>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

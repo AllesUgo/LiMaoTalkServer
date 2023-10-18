@@ -2,6 +2,9 @@
 #include "logger.h"
 #include "uid.h"
 #include <shared_mutex>
+#include "sqlite_cpp.h"
+#include "DataBase.h"
+#include <fmt/format.h>
 
 bool LiMao::Modules::UserControl::UserControlModule::check_token(std::uint64_t user_id, std::string token) noexcept
 {
@@ -288,6 +291,56 @@ LiMao::Data::DataPackage::TextDataPack LiMao::Modules::UserControl::UserControlM
 			return TextPackWithLogin(text_pack.ID(), text_pack.uid, -1, text_pack.token, "Server error").ToBuffer();
 		}
 	}
+}
+
+LiMao::Data::DataPackage::TextDataPack LiMao::Modules::UserControl::UserControlModule::send_message_to_friend(LiMao::Data::DataPackage::TextDataPack& pack)
+{
+	//检查TOKDN
+	TextPackWithLogin text_pack(pack.ToBuffer().ToString());
+	if (!this->check_token(text_pack.uid, text_pack.token))
+	{
+		return TextPackWithLogin(text_pack.ID(), text_pack.uid, 1, "", "Invalid token").ToBuffer();
+	}
+	uint64_t friend_uid;
+	std::stringstream(text_pack.row_json_obj["Data"]("FriendUID"))>>friend_uid;
+	if (!friend_uid) return TextPackWithLogin(text_pack.ID(), text_pack.uid, 2, text_pack.token, "Invalid friend uid");
+	try
+	{
+		if (!User::CheckUserExist(friend_uid))
+			return TextPackWithLogin(text_pack.ID(), text_pack.uid, 3, text_pack.token, "Target absent");
+		User user;
+		user.uid = text_pack.uid;
+		auto friend_list = user.GetFriendList();
+		if (std::find(friend_list.begin(), friend_list.end(), friend_uid) == friend_list.end())
+			return TextPackWithLogin(text_pack.ID(), text_pack.uid, 4, text_pack.token, "Target is not friend");
+	}
+	catch (const UserControlException& ex)
+	{
+		if (ex.is_normal_exception)
+		{
+			return TextPackWithLogin(text_pack.ID(), text_pack.uid, -1, text_pack.token, ex.what()).ToBuffer();
+		}
+		else
+		{
+			LiMao::Service::Logger::LogError("User control module: Get username with uid error:%s", ex.what());
+			return TextPackWithLogin(text_pack.ID(), text_pack.uid, -1, text_pack.token, "Server error").ToBuffer();
+		}
+	}
+	//检查与好友是否存在已有会话
+	try
+	{
+		DataBase::SQLite database = DataBase::SQLite::Open(LiMao::Config::ConfigManager::UserMessageDatabasePath().c_str());
+		if (!database.IsTableExist("sessions"))
+		{
+			//数据库中不存在sessions表
+		}
+	}
+	catch (const DataBase::DataBaseException& ex)
+	{
+		LiMao::Service::Logger::LogError("User control module: Get username with uid error:%s", ex.what());
+		return TextPackWithLogin(text_pack.ID(), text_pack.uid, -1, text_pack.token, "Server error").ToBuffer();
+	}
+	return LiMao::Data::DataPackage::TextDataPack();
 }
 
 bool LiMao::Modules::UserControl::UserControlModule::OnLoad(const LiMao::ID::UUID& module_uuid)
