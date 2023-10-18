@@ -22,7 +22,7 @@ namespace LiMao::DataBase
 		auto operator=(const SQLite& other) -> const SQLite&;
 		auto operator=(SQLite&& other) noexcept -> SQLite&;
 		void Close(void)noexcept;
-		auto Exec(const std::string& cmd) -> std::map<std::string,std::vector<std::string>>;
-		auto IsTableExist(const std::string& table_name) -> bool;
+		auto Exec(const std::string& cmd) const -> std::map<std::string,std::vector<std::string>>;
+		auto IsTableExist(const std::string& table_name) const -> bool;
 	};
 }

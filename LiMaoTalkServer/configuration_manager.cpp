@@ -99,12 +99,24 @@ void LiMao::Config::ConfigManager::UserDataPath(const std::string& path)
 
 std::string LiMao::Config::ConfigManager::UserDataPath(void)
 {
-if (!config.KeyExist("UserDataPath") || config.GetValueType("UserDataPath") != cJSON_String)
+	if (!config.KeyExist("UserDataPath") || config.GetValueType("UserDataPath") != cJSON_String)
 		throw cfg::ConfigException("Configration file key \"UserDataPath\" error");
 	return config("UserDataPath");
 }
 
-LiMao::Config::ConfigException::ConfigException(const std::string& reason) noexcept:reason(reason){}
+void LiMao::Config::ConfigManager::UserMessageDatabasePath(const std::string& path)
+{
+	config.ReplaceAdd("UserMessageDatabasePath", path);
+}
+
+std::string LiMao::Config::ConfigManager::UserMessageDatabasePath(void)
+{
+	if (!config.KeyExist("UserMessageDatabasePath") || config.GetValueType("UserMessageDatabasePath") != cJSON_String)
+		throw cfg::ConfigException("Configration file key \"UserMessageDatabasePath\" error");
+	return config("UserMessageDatabasePath");
+}
+
+LiMao::Config::ConfigException::ConfigException(const std::string& reason) noexcept :reason(reason) {}
 
 const char* LiMao::Config::ConfigException::what(void) const noexcept
 {

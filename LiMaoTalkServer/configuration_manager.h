@@ -32,6 +32,8 @@ namespace LiMao
 			static void CoreLogPath(const std::string& path);
 			static void UserDataPath(const std::string& path);
 			static std::string UserDataPath(void);
+			static void UserMessageDatabasePath(const std::string& path);
+			static std::string UserMessageDatabasePath(void);
 		};
 		class GlobalFileRWLock
 		{

@@ -6,8 +6,9 @@ auto LiMao::DataBase::SQLite::Open(const char* path) -> SQLite
 {
     SQLite db;
     db.counter_mutex = nullptr;
-    if (SQLITE_OK != sqlite3_config(SQLITE_CONFIG_SERIALIZED))
-        throw DataBaseException("Change to serialized mode failed");
+    if (sqlite3_threadsafe()!=1)
+        if (SQLITE_OK != sqlite3_config(SQLITE_CONFIG_SERIALIZED))
+            throw DataBaseException("Change to serialized mode failed");
     if (0 != sqlite3_open(path, &db.m_db))
     {
         throw DataBaseException("Open database failed");
@@ -88,7 +89,7 @@ void LiMao::DataBase::SQLite::Close(void) noexcept
     }
 }
 #include <stdio.h>
-auto LiMao::DataBase::SQLite::Exec(const std::string& cmd)->std::map<std::string, std::vector<std::string>>
+auto LiMao::DataBase::SQLite::Exec(const std::string& cmd) const ->std::map<std::string, std::vector<std::string>>
 {
     if (!this->counter_mutex) throw DataBaseException("Database not open");
     std::map<std::string, std::vector<std::string>> ret;
@@ -97,7 +98,10 @@ auto LiMao::DataBase::SQLite::Exec(const std::string& cmd)->std::map<std::string
         [](void* ret, int argc, char** argv, char** col_name)->int
         {
             std::map<std::string, std::vector<std::string>>* m = (std::map<std::string, std::vector<std::string>>*)ret;
-            for (int i = 0; i < argc; ++i) (*m)[col_name[i]].push_back(argv[i]);
+            for (int i = 0; i < argc; ++i)
+            {
+                (*m)[col_name[i]].push_back(argv[i]?argv[i]:"");
+            }
             return 0;
         },
         &ret,
@@ -111,7 +115,7 @@ auto LiMao::DataBase::SQLite::Exec(const std::string& cmd)->std::map<std::string
     return ret;
 }
 
-auto LiMao::DataBase::SQLite::IsTableExist(const std::string& table_name) -> bool
+auto LiMao::DataBase::SQLite::IsTableExist(const std::string& table_name) const -> bool
 {
     auto res = this->Exec(fmt::format("SELECT name FROM sqlite_master WHERE type='table' and name='{}' order by name;",table_name));
     if ((*res.begin()).second.size() >= 1 && (*res.begin()).second[0] == table_name) return true;
