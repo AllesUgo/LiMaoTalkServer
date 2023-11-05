@@ -36,7 +36,6 @@ namespace LiMao
 			ItemType GetItem(int time_out = -1);/*-1 means wait inf*/
 			ItemType PeekItem(int time_out = -1);
 			void AddItem(const ItemType& item,int time_out=-1);/*-1 means wait inf*/
-			bool IsIn(const ItemType& item) const noexcept;
 			void Clear(void);
 		};
 
@@ -160,19 +159,6 @@ namespace LiMao
 				lck.unlock();			
 			}
 			this->getter.notify_one();
-		}
-		template<typename ItemType>
-		inline bool MessageQueue<ItemType>::IsIn(const ItemType& item) const noexcept
-		{
-			std::unique_lock<std::mutex> lck(mtx);
-			for (const auto& i : this->que)
-			{
-				if (i == item)
-				{
-					return true;
-				}
-			}
-			return false;
 		}
 		template<typename ItemType>
 		inline void MessageQueue<ItemType>::Clear(void)

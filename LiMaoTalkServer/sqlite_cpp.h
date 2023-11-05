@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <sqlite3.h>
 #include <shared_mutex>
 #include <vector>
@@ -16,6 +16,7 @@ namespace LiMao::DataBase
 		SQLite() = default;
 	public:
 		static auto Open(const char* path) -> SQLite;
+		static auto Open(const std::string& path) -> SQLite;
 		SQLite(const SQLite& other);
 		SQLite(SQLite&& other) noexcept;
 		~SQLite()noexcept;

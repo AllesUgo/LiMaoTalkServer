@@ -42,11 +42,9 @@ int main()
 	LiMao::Config::ConfigManager::SaveConfig();
 	try
 	{
-		//LiMao::DataBase::SQLite database = LiMao::DataBase::SQLite::Open(LiMao::Config::ConfigManager::UserMessageDatabasePath().c_str());
-		auto session_uuid = LiMao::ID::UUID::Generate();
-		LiMao::Modules::UserControl::Sessions::Session session = LiMao::ID::UUID("0a88eafd-315b-47c2-8dcf-74a7aeaf49d7");
-		//session.AddMembers({ LiMao::ID::UUID::Generate() });
-		session.DeleteThisSession();
+		LiMao::Modules::UserControl::Sessions::FriendsSessions session(9999);
+		auto x = session.GetFriendSession(10000);
+		std::cout << x.ToString() << std::endl;
 	}
 	catch (const std::exception&ex)
 	{
@@ -87,6 +85,7 @@ void MainServer::Start(void)
 			if (str == "exit")
 			{
 				is_close = true;
+				LiMao::Service::Logger::LogInfo("Server is now to stop, please to wait");
 				return;
 			}
 		}

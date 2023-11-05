@@ -5,6 +5,7 @@
 #include "sqlite_cpp.h"
 #include "DataBase.h"
 #include <fmt/format.h>
+#include "sessions.h"
 
 bool LiMao::Modules::UserControl::UserControlModule::check_token(std::uint64_t user_id, std::string token) noexcept
 {
@@ -304,15 +305,18 @@ LiMao::Data::DataPackage::TextDataPack LiMao::Modules::UserControl::UserControlM
 	uint64_t friend_uid;
 	std::stringstream(text_pack.row_json_obj["Data"]("FriendUID"))>>friend_uid;
 	if (!friend_uid) return TextPackWithLogin(text_pack.ID(), text_pack.uid, 2, text_pack.token, "Invalid friend uid");
+	if (text_pack.row_json_obj["Data"]("Message") == "") return TextPackWithLogin(text_pack.ID(), text_pack.uid, 4, text_pack.token, "Message is null");
+	if (!LiMao::Modules::UserControl::Sessions::Session::Message::IsTypeSupported(text_pack.row_json_obj["Data"]("MessageType")))
+		return TextPackWithLogin(text_pack.ID(), text_pack.uid, 4, text_pack.token, "Message type unsupported");
 	try
 	{
 		if (!User::CheckUserExist(friend_uid))
-			return TextPackWithLogin(text_pack.ID(), text_pack.uid, 3, text_pack.token, "Target absent");
+			return TextPackWithLogin(text_pack.ID(), text_pack.uid, 3, text_pack.token, "Target absent").ToBuffer();
 		User user;
 		user.uid = text_pack.uid;
 		auto friend_list = user.GetFriendList();
 		if (std::find(friend_list.begin(), friend_list.end(), friend_uid) == friend_list.end())
-			return TextPackWithLogin(text_pack.ID(), text_pack.uid, 4, text_pack.token, "Target is not friend");
+			return TextPackWithLogin(text_pack.ID(), text_pack.uid, 4, text_pack.token, "Target is not friend").ToBuffer();
 	}
 	catch (const UserControlException& ex)
 	{
@@ -329,18 +333,48 @@ LiMao::Data::DataPackage::TextDataPack LiMao::Modules::UserControl::UserControlM
 	//检查与好友是否存在已有会话
 	try
 	{
-		DataBase::SQLite database = DataBase::SQLite::Open(LiMao::Config::ConfigManager::UserMessageDatabasePath().c_str());
-		if (!database.IsTableExist("sessions"))
+		LiMao::Modules::UserControl::Sessions::FriendsSessions self_session_table(text_pack.uid);
+		LiMao::Modules::UserControl::Sessions::FriendsSessions friend_session_table(friend_uid);
+		if (!self_session_table.IsFriendSessionExist(friend_uid))
 		{
-			//数据库中不存在sessions表
+			auto session_id = LiMao::ID::UUID::GenerateTimeSafe();
+			LiMao::Modules::UserControl::Sessions::Session::CreateSession(session_id).AddMembers({ text_pack.uid,friend_uid });
+			self_session_table.AddFriendSession(friend_uid, session_id);
+			friend_session_table.AddFriendSession(text_pack.uid, session_id);
 		}
+		LiMao::Modules::UserControl::Sessions::Session session(self_session_table.GetFriendSession(friend_uid));
+		session.AddMessage(std::time(nullptr), text_pack.uid, text_pack.row_json_obj["Data"]("MessageType"),
+			RbsLib::Buffer(text_pack.row_json_obj["Data"]("Message"), true));
 	}
-	catch (const DataBase::DataBaseException& ex)
+	catch (const Sessions::SessionException& ex)
 	{
-		LiMao::Service::Logger::LogError("User control module: Get username with uid error:%s", ex.what());
+		//LiMao::Service::Logger::LogError("User control module: Get username with uid error:%s", ex.what());
 		return TextPackWithLogin(text_pack.ID(), text_pack.uid, -1, text_pack.token, "Server error").ToBuffer();
 	}
-	return LiMao::Data::DataPackage::TextDataPack();
+	//尝试给好友直接发送
+	std::shared_lock<std::shared_mutex> lock1(this->online_connections_mutex);
+	std::shared_lock<std::shared_mutex> lock2(this->users_mutex);
+	if (this->user_connections.find(friend_uid) != this->user_connections.end() &&
+		this->users.find(friend_uid) != this->users.end())
+	{
+		neb::CJsonObject data;
+		data.Add("SenderUID", std::to_string(text_pack.uid));
+		data.Add("FromType", "friend");//因为201号消息一定是发给好友的
+		data.Add("MessageType", text_pack.row_json_obj["Data"]("MessageType"));
+		data.Add("Message", text_pack.row_json_obj["Data"]("Message"));
+		auto se = TextPackWithLogin(202, friend_uid, 0, this->users.find(friend_uid)->second.token, "Success",data);
+		try
+		{
+			this->user_connections.find(friend_uid)->second->Send(se.ToBuffer());
+		}
+		catch (const LiMao::Service::SafeNetworkException& ex)
+		{
+		}
+	}
+	lock1.unlock();
+	lock2.unlock();
+	//返回成功
+	return TextPackWithLogin(text_pack.id, text_pack.uid, 0, text_pack.token, "Success").ToBuffer();
 }
 
 bool LiMao::Modules::UserControl::UserControlModule::OnLoad(const LiMao::ID::UUID& module_uuid)
@@ -416,6 +450,8 @@ bool LiMao::Modules::UserControl::UserControlModule::OnMessage(LiMao::Data::Data
 		case 105:
 			info.sending_service.Send(info.safe_connection, this->get_username_with_uid(dynamic_cast<LiMao::Data::DataPackage::TextDataPack&>(data)).ToBuffer());
 			break;
+		case 201:
+			info.sending_service.Send(info.safe_connection, this->send_message_to_friend(dynamic_cast<LiMao::Data::DataPackage::TextDataPack&>(data)).ToBuffer());
 		default:
 			return false;
 		}

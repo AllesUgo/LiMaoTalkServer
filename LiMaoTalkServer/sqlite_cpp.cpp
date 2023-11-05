@@ -1,4 +1,4 @@
-#include <fmt/format.h>
+ï»¿#include <fmt/format.h>
 #include "sqlite_cpp.h"
 #include "DataBase.h"
 
@@ -18,6 +18,11 @@ auto LiMao::DataBase::SQLite::Open(const char* path) -> SQLite
     return db;
 }
 
+auto LiMao::DataBase::SQLite::Open(const std::string& path) -> SQLite
+{
+    return SQLite::Open(path.c_str());
+}
+
 LiMao::DataBase::SQLite::SQLite(const SQLite& other)
 {
     other.counter_mutex->lock();
@@ -25,7 +30,7 @@ LiMao::DataBase::SQLite::SQLite(const SQLite& other)
     this->refCount=other.refCount;
     if (*this->refCount > 0)
     {
-		++(*this->refCount);//ÒýÓÃ¼ÆÊý×ÔÔö
+		++(*this->refCount);//å¼•ç”¨è®¡æ•°è‡ªå¢ž
 	}
     this->m_db = other.m_db;
 	other.counter_mutex->unlock();
@@ -78,7 +83,7 @@ void LiMao::DataBase::SQLite::Close(void) noexcept
         this->counter_mutex->lock();
         if (--*this->refCount <= 0)
         {
-            //ÐèÒªÊÍ·Å×ÊÔ´
+            //éœ€è¦é‡Šæ”¾èµ„æº
             this->counter_mutex->unlock();
             delete this->counter_mutex;
             delete this->refCount;
