@@ -48,5 +48,6 @@ namespace LiMao::Modules::UserControl
 		bool IsTokenAllow(void)const noexcept;
 		static bool IsTokenAllow(const std::string& token)noexcept;
 		static std::string GetUserName(int64_t uid);
+		bool IsFriend(uint64_t friend_uid);
 	};
 }

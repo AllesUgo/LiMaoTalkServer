@@ -377,6 +377,68 @@ LiMao::Data::DataPackage::TextDataPack LiMao::Modules::UserControl::UserControlM
 	return TextPackWithLogin(text_pack.id, text_pack.uid, 0, text_pack.token, "Success").ToBuffer();
 }
 
+LiMao::Data::DataPackage::TextDataPack LiMao::Modules::UserControl::UserControlModule::get_messages(LiMao::Data::DataPackage::TextDataPack& pack)
+{
+	TextPackWithLogin text_pack(pack.ToBuffer().ToString());
+	if (!this->check_token(text_pack.uid, text_pack.token))
+	{
+		return TextPackWithLogin(text_pack.ID(), text_pack.uid, 1, "", "Invalid token").ToBuffer();
+	}
+	uint64_t target_uid = 0;
+	std::string target_uid_str;
+	std::string target_type;
+	int range_left = 0, range_right = 0;
+	//检查所需的键和值是否存在
+	if (!text_pack.row_json_obj["Data"].KeyExist("TargetUID") ||
+		!text_pack.row_json_obj["Data"].KeyExist("TargetType") ||
+		!text_pack.row_json_obj["Data"].KeyExist("Range"))
+		return TextPackWithLogin(text_pack.ID(), text_pack.uid, 2, text_pack.token, "Missing parameter").ToBuffer();
+	//读取所需的值
+	if (!text_pack.row_json_obj["Data"].Get("TargetType",target_type)||
+		2!=std::sscanf(text_pack.row_json_obj["Data"]("Range").c_str(),"%d,%d",&range_left,&range_right))
+		return TextPackWithLogin(text_pack.ID(), text_pack.uid, 3, text_pack.token, "Parameter type error or formatting error").ToBuffer();
+	target_uid_str = text_pack.row_json_obj["Data"]("TargetUID");
+	std::stringstream(target_uid_str) >> target_uid;
+	if (target_type == "Friend")
+	{
+		//检查目标是否是好友
+		User self;
+		self.uid = text_pack.uid;
+		if (!self.IsFriend(target_uid))
+			return TextPackWithLogin(text_pack.ID(), text_pack.uid, 5, text_pack.token, "Permission denied").ToBuffer();
+		Sessions::FriendsSessions self_friends_sessions(text_pack.uid);
+		neb::CJsonObject data;
+		data.AddEmptySubArray("Messages");
+		if (self_friends_sessions.IsFriendSessionExist(target_uid))
+		{
+			Sessions::Session session(self_friends_sessions.GetFriendSession(target_uid));
+			try
+			{
+				auto messages = session.GetMessages(range_left, range_right);
+				for (const auto& it : messages)
+				{
+					neb::CJsonObject obj;
+					obj.Add("Time", it.time);
+					obj.Add("SenderUID", it.user_uid);
+					obj.Add("MessageType", it.type);
+					if (it.type == "text")
+						obj.Add("Message", it.message().ToString());
+					data["Messages"].Add(obj);
+				}
+			}
+			catch (const Sessions::SessionException& ex)
+			{
+				return TextPackWithLogin(text_pack.ID(), text_pack.uid, 6, text_pack.token, "Invalid range");
+			}
+		}
+		return TextPackWithLogin(text_pack.ID(), text_pack.uid, 0, text_pack.token, "Success", data).ToBuffer();
+	}
+	else
+	{
+		return TextPackWithLogin(text_pack.ID(), text_pack.uid, 4, text_pack.token, "Target type unknown").ToBuffer();
+	}
+}
+
 bool LiMao::Modules::UserControl::UserControlModule::OnLoad(const LiMao::ID::UUID& module_uuid)
 {
 	this->task_pool = new LiMao::Service::TaskPool;
@@ -452,6 +514,10 @@ bool LiMao::Modules::UserControl::UserControlModule::OnMessage(LiMao::Data::Data
 			break;
 		case 201:
 			info.sending_service.Send(info.safe_connection, this->send_message_to_friend(dynamic_cast<LiMao::Data::DataPackage::TextDataPack&>(data)).ToBuffer());
+			break;
+		case 203:
+			info.sending_service.Send(info.safe_connection, this->get_messages(dynamic_cast<LiMao::Data::DataPackage::TextDataPack&>(data)).ToBuffer());
+			break;
 		default:
 			return false;
 		}

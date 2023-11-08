@@ -447,3 +447,10 @@ std::string LiMao::Modules::UserControl::User::GetUserName(int64_t uid)
 	}
 
 }
+
+bool LiMao::Modules::UserControl::User::IsFriend(uint64_t friend_uid)
+{
+	auto friend_list = this->GetFriendList();
+	for (const auto& it : friend_list) if (friend_uid == it) return true;
+	return false;
+}
