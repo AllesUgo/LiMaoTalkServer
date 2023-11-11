@@ -104,7 +104,7 @@ LiMao::Data::DataPackage::TextDataPack LiMao::Modules::UserControl::UserControlM
 
 }
 
-LiMao::Data::DataPackage::TextDataPack LiMao::Modules::UserControl::UserControlModule::request_friend(LiMao::Data::DataPackage::TextDataPack& pack)
+LiMao::Data::DataPackage::TextDataPack LiMao::Modules::UserControl::UserControlModule::request_friend_message(LiMao::Data::DataPackage::TextDataPack& pack)
 {
 	namespace us = LiMao::Modules::UserControl;
 	TextPackWithLogin text_pack(pack.ToBuffer().ToString());
@@ -262,7 +262,34 @@ LiMao::Data::DataPackage::TextDataPack LiMao::Modules::UserControl::UserControlM
 	}
 }
 
-LiMao::Data::DataPackage::TextDataPack LiMao::Modules::UserControl::UserControlModule::get_username_with_uid(LiMao::Data::DataPackage::TextDataPack& pack)
+LiMao::Data::DataPackage::TextDataPack LiMao::Modules::UserControl::UserControlModule::get_friends_list_message(LiMao::Data::DataPackage::TextDataPack& pack)
+{
+	TextPackWithLogin text_pack(pack.ToBuffer().ToString());
+	if (!this->check_token(text_pack.uid, text_pack.token))
+	{
+		return TextPackWithLogin(text_pack.ID(), text_pack.uid, 1, "", "Invalid token").ToBuffer();
+	}
+	User user;
+	user.uid = text_pack.uid;
+	try
+	{
+		auto friends_list = user.GetFriendList();
+		neb::CJsonObject data;
+		data.AddEmptySubArray("FriendsUID");
+		for (const auto& it : friends_list)
+		{
+			data["FriendsUID"].Add(it);
+		}
+		return TextPackWithLogin(text_pack.ID(), text_pack.uid, 0, text_pack.token, "Success", data);
+	}
+	catch (const std::exception& ex)
+	{
+		Service::Logger::LogError(fmt::format("Get user {} friends list failed : {}", text_pack.uid, ex.what()).c_str());
+		return TextPackWithLogin(text_pack.ID(), text_pack.uid, -1, "", "Server error").ToBuffer();
+	}
+}
+
+LiMao::Data::DataPackage::TextDataPack LiMao::Modules::UserControl::UserControlModule::get_username_with_uid_message(LiMao::Data::DataPackage::TextDataPack& pack)
 {
 	TextPackWithLogin text_pack(pack.ToBuffer().ToString());
 	if (!this->check_token(text_pack.uid, text_pack.token))
@@ -294,7 +321,7 @@ LiMao::Data::DataPackage::TextDataPack LiMao::Modules::UserControl::UserControlM
 	}
 }
 
-LiMao::Data::DataPackage::TextDataPack LiMao::Modules::UserControl::UserControlModule::send_message_to_friend(LiMao::Data::DataPackage::TextDataPack& pack)
+LiMao::Data::DataPackage::TextDataPack LiMao::Modules::UserControl::UserControlModule::send_message_to_friend_message(LiMao::Data::DataPackage::TextDataPack& pack)
 {
 	//检查TOKDN
 	TextPackWithLogin text_pack(pack.ToBuffer().ToString());
@@ -377,7 +404,7 @@ LiMao::Data::DataPackage::TextDataPack LiMao::Modules::UserControl::UserControlM
 	return TextPackWithLogin(text_pack.id, text_pack.uid, 0, text_pack.token, "Success").ToBuffer();
 }
 
-LiMao::Data::DataPackage::TextDataPack LiMao::Modules::UserControl::UserControlModule::get_messages(LiMao::Data::DataPackage::TextDataPack& pack)
+LiMao::Data::DataPackage::TextDataPack LiMao::Modules::UserControl::UserControlModule::get_messages_message(LiMao::Data::DataPackage::TextDataPack& pack)
 {
 	TextPackWithLogin text_pack(pack.ToBuffer().ToString());
 	if (!this->check_token(text_pack.uid, text_pack.token))
@@ -501,7 +528,7 @@ bool LiMao::Modules::UserControl::UserControlModule::OnMessage(LiMao::Data::Data
 			info.sending_service.Send(info.safe_connection, this->regist_message(dynamic_cast<LiMao::Data::DataPackage::TextDataPack&>(data)).ToBuffer());
 			break;
 		case 102://Request friend
-			info.sending_service.Send(info.safe_connection, this->request_friend(dynamic_cast<LiMao::Data::DataPackage::TextDataPack&>(data)).ToBuffer());
+			info.sending_service.Send(info.safe_connection, this->request_friend_message(dynamic_cast<LiMao::Data::DataPackage::TextDataPack&>(data)).ToBuffer());
 			break;
 		case 103://Get friend requests list
 			info.sending_service.Send(info.safe_connection, this->get_friend_requests_message(dynamic_cast<LiMao::Data::DataPackage::TextDataPack&>(data)).ToBuffer());
@@ -509,14 +536,17 @@ bool LiMao::Modules::UserControl::UserControlModule::OnMessage(LiMao::Data::Data
 		case 104://Agree friend request
 			info.sending_service.Send(info.safe_connection, this->agree_friend_request_message(dynamic_cast<LiMao::Data::DataPackage::TextDataPack&>(data)).ToBuffer());
 			break;
-		case 105:
-			info.sending_service.Send(info.safe_connection, this->get_username_with_uid(dynamic_cast<LiMao::Data::DataPackage::TextDataPack&>(data)).ToBuffer());
+		case 105://Get user name with uid
+			info.sending_service.Send(info.safe_connection, this->get_username_with_uid_message(dynamic_cast<LiMao::Data::DataPackage::TextDataPack&>(data)).ToBuffer());
+			break;
+		case 106:
+			info.sending_service.Send(info.safe_connection, this->get_friends_list_message(dynamic_cast<LiMao::Data::DataPackage::TextDataPack&>(data)).ToBuffer());
 			break;
 		case 201:
-			info.sending_service.Send(info.safe_connection, this->send_message_to_friend(dynamic_cast<LiMao::Data::DataPackage::TextDataPack&>(data)).ToBuffer());
+			info.sending_service.Send(info.safe_connection, this->send_message_to_friend_message(dynamic_cast<LiMao::Data::DataPackage::TextDataPack&>(data)).ToBuffer());
 			break;
 		case 203:
-			info.sending_service.Send(info.safe_connection, this->get_messages(dynamic_cast<LiMao::Data::DataPackage::TextDataPack&>(data)).ToBuffer());
+			info.sending_service.Send(info.safe_connection, this->get_messages_message(dynamic_cast<LiMao::Data::DataPackage::TextDataPack&>(data)).ToBuffer());
 			break;
 		default:
 			return false;

@@ -35,12 +35,13 @@ namespace LiMao::Modules::UserControl
 		bool check_token(std::uint64_t user_id, std::string token)noexcept;
 		LiMao::Data::DataPackage::TextDataPack regist_message(LiMao::Data::DataPackage::TextDataPack&pack) const;
 		LiMao::Data::DataPackage::TextDataPack login_message(LiMao::Data::DataPackage::TextDataPack& pack,LiMao::Service::SafeNetwork&network);
-		LiMao::Data::DataPackage::TextDataPack request_friend(LiMao::Data::DataPackage::TextDataPack& pack);
+		LiMao::Data::DataPackage::TextDataPack request_friend_message(LiMao::Data::DataPackage::TextDataPack& pack);
 		LiMao::Data::DataPackage::TextDataPack get_friend_requests_message(LiMao::Data::DataPackage::TextDataPack& pack);
 		LiMao::Data::DataPackage::TextDataPack agree_friend_request_message(LiMao::Data::DataPackage::TextDataPack& pack);
-		LiMao::Data::DataPackage::TextDataPack get_username_with_uid(LiMao::Data::DataPackage::TextDataPack& pack);
-		LiMao::Data::DataPackage::TextDataPack send_message_to_friend(LiMao::Data::DataPackage::TextDataPack& pack);
-		LiMao::Data::DataPackage::TextDataPack get_messages(LiMao::Data::DataPackage::TextDataPack& pack);
+		LiMao::Data::DataPackage::TextDataPack get_friends_list_message(LiMao::Data::DataPackage::TextDataPack& pack);
+		LiMao::Data::DataPackage::TextDataPack get_username_with_uid_message(LiMao::Data::DataPackage::TextDataPack& pack);
+		LiMao::Data::DataPackage::TextDataPack send_message_to_friend_message(LiMao::Data::DataPackage::TextDataPack& pack);
+		LiMao::Data::DataPackage::TextDataPack get_messages_message(LiMao::Data::DataPackage::TextDataPack& pack);
 	public:
 		// 通过 IModule 继承
 		bool OnLoad(const LiMao::ID::UUID& module_uuid) override;
