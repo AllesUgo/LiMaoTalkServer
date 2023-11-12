@@ -4,17 +4,21 @@
 屏幕共享等功能。即使在同一平台，也有为不同需求设计的客户端，以达到最佳的使用体验。  
 
 ## 服务端
-采用C++编写，具有效率高，内存占用低等优点。支持Linux平台，且可以较为容易的移植到其他平台。
+采用C++编写，具有效率高，内存占用低等优点。支持Linux平台，且可以较为容易的移植到其他平台。  
+采用模块化开发，可以非常方便的为其添加额外的功能支持  
 ### 依赖
 项目依赖于以下库：
 - [RBS Lib](https://github.com/Reliable-Binary-Solutions-Studio/RBSlibs)
-- [libuuid](https://github.com/Reliable-Binary-Solutions-Studio/RBSlibs) 
+- [libuuid](https://github.com/Reliable-Binary-Solutions-Studio/RBSlibs)
+- [libfmt](https://github.com/fmtlib/fmt)
+- [sqlite3](https://www.sqlite.org/index.html)
+
 
 ### 编译
 #### Linux
 ```shell
-sudo apt install uuid-dev libsqlite3-dev libfmt-dev g++
-g++ -std=c++17 -o server *.cpp -luuid -O3
+sudo apt install uuid-dev libsqlite3-dev libfmt-dev sqlite3 g++
+g++ -std=c++17 -o server *.cpp -luuid -lfmt -lsqlite3 -O3
 ```
 
 ## 服务端开发进度
@@ -25,7 +29,7 @@ g++ -std=c++17 -o server *.cpp -luuid -O3
 - [x] 好友申请
 - [x] 好友申请列表获取
 - [x] 好友申请处理
-- [ ] 好友列表获取
+- [x] 好友列表获取
 - [ ] 好友删除
 - [ ] 用户备注
 - [x] 文本发送
