@@ -40,16 +40,6 @@ int main()
 	LiMao::Config::ConfigManager::UserDataPath("user_pool");
 	LiMao::Config::ConfigManager::UserMessageDatabasePath("test.db");
 	LiMao::Config::ConfigManager::SaveConfig();
-	try
-	{
-		LiMao::Modules::UserControl::Sessions::FriendsSessions session(9999);
-		auto x = session.GetFriendSession(10000);
-		std::cout << x.ToString() << std::endl;
-	}
-	catch (const std::exception&ex)
-	{
-		std::cout << "err:" << ex.what() << std::endl;
-	}
 	MainServer server;
 	LiMao::Service::Logger::LogInfo("finished");
 	//for (auto& it : uuid_lst) LiMao::Service::Logger::LogInfo(it.ToString().c_str());
@@ -65,6 +55,7 @@ void MainServer::Init(const std::string& conf_path)
 	ConfigManager::ReadConfig();
 	this->addr = ConfigManager::LocalAddress();
 	this->port = ConfigManager::LocalPort();
+	LiMao::Service::Logger::LogInfo("Server address %s:%d", this->addr.c_str(), this->port);
 	LiMao::Modules::ModulesManager::RegisterModule(new LiMao::Modules::BasicRequest);
 	LiMao::Modules::ModulesManager::RegisterModule(new LiMao::Modules::UserControl::UserControlModule);
 }

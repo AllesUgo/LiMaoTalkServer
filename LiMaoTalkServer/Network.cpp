@@ -29,7 +29,7 @@ RbsLib::Network::TCP::TCPServer::TCPServer()
 RbsLib::Network::TCP::TCPServer::TCPServer(int port, const std::string& address)
 {
 	net::init_network();
-	this->server_socket = socket(AF_INET, SOCK_STREAM, 0);
+	this->server_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 	if (this->server_socket == INVALID_SOCKET)
 		throw net::NetworkException("Allocate socket failed");
 	this->Bind(port, address);
@@ -76,7 +76,7 @@ void RbsLib::Network::TCP::TCPServer::Bind(int port, const std::string& address)
 	if (port < 0 || port>65535) throw net::NetworkException("Port mast be in range 0-65535");
 	s_sin.sin_family = AF_INET;
 	s_sin.sin_port = htons(port);
-	s_sin.sin_addr.s_addr = htonl(inet_addr(address.c_str()));
+	s_sin.sin_addr.s_addr = address!="0.0.0.0"? htonl(inet_addr(address.c_str())): INADDR_ANY;
 
 #ifdef LINUX
 	opt = 1;
@@ -84,7 +84,7 @@ void RbsLib::Network::TCP::TCPServer::Bind(int port, const std::string& address)
 #endif // linux
 
 
-	if (bind(this->server_socket, (struct sockaddr*)&s_sin, sizeof(s_sin)) !=0)
+	if (bind(this->server_socket, (struct sockaddr*)&s_sin, sizeof(s_sin)) ==SOCKET_ERROR)
 		throw net::NetworkException("Bind failed");
 	this->is_bind = true;
 	

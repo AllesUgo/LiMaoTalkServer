@@ -466,6 +466,26 @@ LiMao::Data::DataPackage::TextDataPack LiMao::Modules::UserControl::UserControlM
 	}
 }
 
+LiMao::Data::DataPackage::TextDataPack LiMao::Modules::UserControl::UserControlModule::sign_online_state(LiMao::Data::DataPackage::TextDataPack& pack, LiMao::Service::SafeNetwork& network)
+{
+	TextPackWithLogin text_pack(pack.ToBuffer().ToString());
+	if (!this->check_token(text_pack.uid, text_pack.token))
+	{
+		return TextPackWithLogin(text_pack.ID(), text_pack.uid, 1, "", "Invalid token").ToBuffer();
+	}
+	std::unique_lock<std::shared_mutex> lock(this->online_connections_mutex);
+	if (text_pack.row_json_obj["Data"]("OnlineState") == "Online")
+	{
+		this->user_connections[text_pack.uid] = std::make_shared<LiMao::Service::SafeNetwork>(network);
+	}
+	else if (text_pack.row_json_obj["Data"]("OnlineState") == "Offline")
+	{
+		this->user_connections.erase(text_pack.uid);
+	}
+	lock.unlock();
+	return TextPackWithLogin(text_pack.ID(), text_pack.uid, 0, text_pack.token, "Success").ToBuffer();
+}
+
 bool LiMao::Modules::UserControl::UserControlModule::OnLoad(const LiMao::ID::UUID& module_uuid)
 {
 	this->task_pool = new LiMao::Service::TaskPool;
@@ -541,6 +561,9 @@ bool LiMao::Modules::UserControl::UserControlModule::OnMessage(LiMao::Data::Data
 			break;
 		case 106:
 			info.sending_service.Send(info.safe_connection, this->get_friends_list_message(dynamic_cast<LiMao::Data::DataPackage::TextDataPack&>(data)).ToBuffer());
+			break;
+		case 107:
+			info.sending_service.Send(info.safe_connection, this->sign_online_state(dynamic_cast<LiMao::Data::DataPackage::TextDataPack&>(data), info.safe_connection).ToBuffer());
 			break;
 		case 201:
 			info.sending_service.Send(info.safe_connection, this->send_message_to_friend_message(dynamic_cast<LiMao::Data::DataPackage::TextDataPack&>(data)).ToBuffer());

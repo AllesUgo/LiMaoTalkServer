@@ -42,6 +42,7 @@ namespace LiMao::Modules::UserControl
 		LiMao::Data::DataPackage::TextDataPack get_username_with_uid_message(LiMao::Data::DataPackage::TextDataPack& pack);
 		LiMao::Data::DataPackage::TextDataPack send_message_to_friend_message(LiMao::Data::DataPackage::TextDataPack& pack);
 		LiMao::Data::DataPackage::TextDataPack get_messages_message(LiMao::Data::DataPackage::TextDataPack& pack);
+		LiMao::Data::DataPackage::TextDataPack sign_online_state(LiMao::Data::DataPackage::TextDataPack& pack, LiMao::Service::SafeNetwork& network);
 	public:
 		// 通过 IModule 继承
 		bool OnLoad(const LiMao::ID::UUID& module_uuid) override;
